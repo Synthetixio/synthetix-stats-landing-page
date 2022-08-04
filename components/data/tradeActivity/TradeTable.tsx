@@ -94,6 +94,8 @@ const TradeTable = ({
               className={
                 cellProps.value === "1INCH" ?
                   styles.oneInch :
+                  cellProps.value === "0X" ?
+                    styles.zeroX :
                   cellProps.value === "0" ?
                     styles.OTHER :
                     styles[cellProps.value]}>

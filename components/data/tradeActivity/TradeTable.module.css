@@ -109,6 +109,18 @@
 
 }
 
+.zeroX {
+    color: white;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.zeroX::before {
+    content: url(../../../public/0x-logo.svg);
+
+}
+
 .CURVE {
     color: white;
     display:flex;
