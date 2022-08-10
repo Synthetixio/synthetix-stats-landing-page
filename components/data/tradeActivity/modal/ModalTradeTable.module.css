@@ -128,7 +128,7 @@
 }
 
 .polynomial::before {
-    content: url(../../../../public/polynomial.svg);
+    content: url(../../../../public/polynomial-1.svg);
 
 }
    
