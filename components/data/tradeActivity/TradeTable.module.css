@@ -121,6 +121,18 @@
 
 }
 
+.polynomial {
+    color: white;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.polynomial::before {
+    content: url(../../../public/polynomial.svg);
+
+}
+
 .CURVE {
     color: white;
     display:flex;
