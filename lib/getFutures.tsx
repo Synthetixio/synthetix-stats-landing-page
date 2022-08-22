@@ -48,13 +48,6 @@ export const getFutures = async () => {
   const kwentaNinety = await fetchKwenta(kwenta_url, times.ninetyDayAgo)
   const kwentaAll = await fetchKwenta(kwenta_url, 1646101538) // futures launch date
 
-  console.log(kwentaAll)
-  console.log(kwentaDaily.yo.volume.toNumber())
-
-
-  
-
-
 
   return {
     kwentaAll,
