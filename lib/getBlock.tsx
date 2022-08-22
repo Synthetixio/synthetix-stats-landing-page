@@ -1,5 +1,5 @@
 import getTime from "./getTime";
-import { getRateUpdates } from "../subgraph-ovm";
+import { getRateUpdates } from "../subgraphs/subgraph-ovm";
 
 
   // start data collection at 5 minutes ago to allow data sync

@@ -2,11 +2,15 @@ import { formatPercentDec } from "../constants/format";
 import { getDailyExchangePartners, getExchangePartners } from "../subgraphs/subgraph-ovm";
 import getTime from "./getTime";
 import { getFutures } from "./getFutures";
+import { getFuturesOneMinStats } from "../subgraphs/subgraph-kwenta";
+import { wei } from "@synthetixio/wei";
 
 
 
 
 export const tradeData = async () => {
+
+    const ETH_UNIT = 1000000000000000000;
 
   const { times } = getTime()
 
@@ -19,6 +23,22 @@ export const tradeData = async () => {
       { orderBy: "usdVolume", orderDirection: "desc" },
       { id: true, usdVolume: true, usdFees: true, trades: true }
     );
+
+    const futuresDataCall = await getFuturesOneMinStats(
+        network,
+        { first:999999},
+        { id:true, trades:true, volume:true }
+      );
+  
+      const yo = futuresDataCall.reduce((sum,cur)=>{
+        return {
+              trades: cur.trades.toNumber() + sum.trades,
+              volume: sum.volume.add(cur.volume.div(ETH_UNIT).abs()),
+            }
+      },{
+          trades: 0,
+          volume: wei(0),
+      })
 
     const tradeDataArrTemp: any[] =  tradeDataCall.map((item) => {
       const nameId = item.id === "0" ? "LYRA" : item.id
@@ -179,7 +199,7 @@ export const tradeData = async () => {
       0
       dayTradeDataArr.push({
         col1:"KWENTA",
-        col2: futuresTrades,
+        col2: (await getFutures()).kwentaAll.yo.trades,
         col3: futuresVol
       })
     }

@@ -1,4 +1,4 @@
-import { getTotalActiveStakers } from "../subgraph-ovm";
+import { getTotalActiveStakers } from "../subgraphs/subgraph-ovm";
 import { block } from "./getBlock";
 import getTime from "./getTime";
 

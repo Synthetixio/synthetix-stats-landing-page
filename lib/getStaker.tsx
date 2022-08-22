@@ -1,4 +1,4 @@
-import { getFeePeriods, getLatestRateById, getSNXHolders, getSynthetixById } from "../subgraph-ovm";
+import { getFeePeriods, getLatestRateById, getSNXHolders, getSynthetixById } from "../subgraphs/subgraph-ovm";
 
 // staking, apy, inflation
 

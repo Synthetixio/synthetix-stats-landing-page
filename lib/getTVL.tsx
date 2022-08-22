@@ -1,5 +1,5 @@
 import getTime from "./getTime";
-import { getDebtStates, getWrappers } from "../subgraph-ovm";
+import { getDebtStates, getWrappers } from "../subgraphs/subgraph-ovm";
 import { block } from './getBlock'
 
 
