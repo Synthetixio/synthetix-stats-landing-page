@@ -51,7 +51,7 @@ export const tradeData = async () => {
 
     // reduce other in tradeDataArr and tradeFeeArr
 
-    const tradeDataArr = tradeDataArrTemp.reduce((acc, cur) => {
+    const tradeDataArr:any[] = tradeDataArrTemp.reduce((acc, cur) => {
       const { col1, col2, col3 } = cur;
       const item = acc.find((it: { col1: string }) => it.col1 === col1);
       if (item) {
@@ -76,12 +76,12 @@ export const tradeData = async () => {
 
     //
 
-    const totalTrades = tradeDataCall.reduce((sum, cur) => {
-      return sum + cur.trades.toNumber();
+    const totalTrades = tradeDataArr.reduce((sum,cur) => {
+      return sum + cur.col2;
     }, 0)
 
-    const totalVol = tradeDataCall.reduce((sum, cur) => {
-      return sum + cur.usdVolume.toNumber();
+    const totalVol = tradeDataArr.reduce((sum, cur) => {
+      return sum + cur.col3;
     }, 0)
 
     const totalFee = tradeDataCall.reduce((sum, cur) => {
@@ -184,7 +184,7 @@ export const tradeData = async () => {
       })
     }
 
-    const dayTradeStats = dayTradeDataArr.reduce((acc, cur) => {
+    const dayTradeStats:any[] = dayTradeDataArr.reduce((acc, cur) => {
       const { col1, col2, col3 } = cur;
       const item = acc.find((it: { col1: string }) => it.col1 === col1);
       if (item) {
@@ -196,11 +196,19 @@ export const tradeData = async () => {
       return acc;
     }, []);
 
-    const dayTradeNum = dayEpochTradeData.reduce((sum, cur) => {
+    const dayTradeNum = dayTradeStats.reduce((sum,cur)=>{
+      return sum + cur.col2
+    },0)
+
+    const dayVol = dayTradeStats.reduce((sum,cur)=>{
+      return sum + cur.col3
+    },0)
+
+    const dayTradeNum2 = dayEpochTradeData.reduce((sum, cur) => {
       return sum + cur.trades.toNumber();
     }, 0)
 
-    const dayVol = dayEpochTradeData.reduce((sum, cur) => {
+    const dayVol2 = dayEpochTradeData.reduce((sum, cur) => {
       return sum + cur.usdVolume.toNumber();
     }, 0)
 
