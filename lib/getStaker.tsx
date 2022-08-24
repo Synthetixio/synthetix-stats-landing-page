@@ -6,10 +6,9 @@ import { getFeePeriods, getLatestRateById, getSNXHolders, getSynthetixById } fro
 export const staker = async () => {
     const mainnet_url = "https://api.thegraph.com/subgraphs/name/synthetixio-team/mainnet-main"
     const optimism_url = "https://api.thegraph.com/subgraphs/name/synthetixio-team/optimism-main"
-    const OP_URL = "https://api-optimistic.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0x8700dAec35aF8Ff88c16BdF0418774CB3D7599B4&apikey=XKERESFNFECWPVYT3NXK48N24N77NVKK7Z"
+    const OP_URL = `https://api-optimistic.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0x8700dAec35aF8Ff88c16BdF0418774CB3D7599B4&${process.env.OP}`
     const snx_API = "https://api.synthetix.io/staking-ratio"
-    const MAIN_URL = "https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F&apikey=4YCUHXX2TCJPD6IFYSSI7DCX62QUZCSIUC"
-    const dataStore = {}
+    const MAIN_URL = `https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F&apikey=${process.env.MAIN}`
     
     const snxRateCall = await getLatestRateById(
         optimism_url,
