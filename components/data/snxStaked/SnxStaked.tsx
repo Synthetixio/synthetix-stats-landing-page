@@ -46,13 +46,8 @@ const SnxStaked = ({
       `How many SNX is staked across all layers, compared to the total supply across all layers. Updated every 15 minutes` :
       `How many SNX is staked compared to total supply. Updated every 15 minutes.`
 
-  /*
-  <p className={styles.percentStaked}>{click === 1 ? percentMain : click === 10 ? percentOvm : percentAll}</p>
-      <h3 className={styles.secondaryHeading}>Total SNX Staked</h3>
-      <p className={styles.values}>{click === 1 ? stakeMain : click === 10 ? stakeOvm : stakeAll}</p>
-      <h3 className={styles.secondaryHeading}>Staked Value</h3>
-      <p className={styles.values}>{click === 1 ? valueMain : click === 10 ? valueOvm : valueAll}</p>
-  */
+  
+ 
 
   return (
     <div className={styles.snxStaked}>
@@ -65,11 +60,12 @@ const SnxStaked = ({
           </span>
         </InfoTooltip>
       </div>
-      <p className={styles.percentStaked}>COMING SOON</p>
+      <p className={styles.percentStaked}>{click === 1 ? percentMain : click === 10 ? percentOvm : percentAll}</p>
       <h3 className={styles.secondaryHeading}>Total SNX Staked</h3>
-      <p className={styles.values}>-</p>
+      <p className={styles.values}>{click === 1 ? stakeMain : click === 10 ? stakeOvm : stakeAll}</p>
       <h3 className={styles.secondaryHeading}>Staked Value</h3>
-      <p className={styles.values}>-</p>
+      <p className={styles.values}>{click === 1 ? valueMain : click === 10 ? valueOvm : valueAll}</p>
+  
     </div>
   );
 };

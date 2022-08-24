@@ -1,3 +1,4 @@
+import { formatPercent } from "../constants/format";
 import { getFeePeriods, getLatestRateById, getSNXHolders, getSynthetixById } from "../subgraphs/subgraph-ovm";
 
 // staking, apy, inflation
@@ -5,7 +6,11 @@ import { getFeePeriods, getLatestRateById, getSNXHolders, getSynthetixById } fro
 export const staker = async () => {
     const mainnet_url = "https://api.thegraph.com/subgraphs/name/synthetixio-team/mainnet-main"
     const optimism_url = "https://api.thegraph.com/subgraphs/name/synthetixio-team/optimism-main"
-
+    const OP_URL = "https://api-optimistic.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0x8700dAec35aF8Ff88c16BdF0418774CB3D7599B4&apikey=XKERESFNFECWPVYT3NXK48N24N77NVKK7Z"
+    const snx_API = "https://api.synthetix.io/staking-ratio"
+    const MAIN_URL = "https://api.etherscan.io/api?module=stats&action=tokensupply&contractaddress=0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F&apikey=4YCUHXX2TCJPD6IFYSSI7DCX62QUZCSIUC"
+    const dataStore = {}
+    
     const snxRateCall = await getLatestRateById(
         optimism_url,
         { id: "SNX" },
@@ -14,84 +19,19 @@ export const staker = async () => {
 
     const snxRate = snxRateCall.rate.toNumber()
 
-    const fetchSnxInfo = async (network: string) => {
-        const snxAll = await getSynthetixById(
-            network,
-            {
-                id: "1",
-            },
-            {
-                issuers: true,
-                snxHolders: true
-            },
-        )
+    const dataFetchSNX = await fetch(snx_API)
+    const dataFetchOP = await fetch(OP_URL)
+    const dataFetchMain = await fetch(MAIN_URL)
 
-        const issuers = snxAll.issuers.toNumber()
-        const snxHolders = snxAll.snxHolders.toNumber()
+    const mainData = await dataFetchMain.json()
+    const opData = await dataFetchOP.json()
+    const snxData = await dataFetchSNX.json() 
 
-        return {
-            issuers,
-            snxHolders
-        }
-    }
+    const totalSupplyOvm = opData.result / 1e18
+    const totalSupplyMain = mainData.result / 1e18
 
-    const snxOvm = await fetchSnxInfo(optimism_url)
-    const issuersOvm = snxOvm.issuers
-    const holdersOvm = snxOvm.snxHolders
-
-    const snxMain = await fetchSnxInfo(mainnet_url)
-    const issuersMain = snxMain.issuers
-    const holdersMain = snxMain.snxHolders
-
-    const snxHolderTotal = async (network: string, issuers: number) => {
-        const snxHolderTotal = await getSNXHolders(
-            network,
-            {
-                orderBy: 'balanceOf',
-                orderDirection: 'desc',
-                first: issuers,
-            }, {
-            id: true,
-            balanceOf: true,
-        }
-        );
-
-        const totalSupply = snxHolderTotal.reduce((sum: number, cur: any) => {
-            return sum + cur.balanceOf.toNumber()
-        }, 0)
-
-        return totalSupply
-
-    }
-
-    const totalSupplyOvm = await snxHolderTotal(optimism_url, issuersOvm)
-    const totalSupplyMain = await snxHolderTotal(mainnet_url, issuersMain)
-
-    const snxStakerCall = async (network: string, holders: number) => {
-        const snxStakerTotal = await getSNXHolders(
-            network,
-            {
-                orderBy: 'collateral',
-                orderDirection: 'desc',
-                first: holders,
-                where: { initialDebtOwnership_not: 0 }
-
-            }, {
-            id: true,
-            collateral: true,
-        }
-        );
-
-        const totalStake = snxStakerTotal.reduce((sum: number, cur: any) => {
-            return sum + cur.collateral.toNumber()
-        }, 0)
-
-        return totalStake
-
-    }
-
-    const totalStakeOvm = await snxStakerCall(optimism_url, holdersOvm)
-    const totalStakeMain = await snxStakerCall(mainnet_url, holdersMain)
+    const totalStakeOvm = snxData.stakedSnx.optimism
+    const totalStakeMain = snxData.stakedSnx.ethereum
     const totalStakeAll = totalStakeMain + totalStakeOvm
 
     const stakeValueOvm = totalStakeOvm * snxRate
@@ -104,7 +44,7 @@ export const staker = async () => {
 
     const percentStakedMain = totalStakeMain / totalSupplyMain
     const percentStakedOvm = totalStakeOvm / totalSupplyOvm
-    const percentStakedAll = (totalStakeMain + totalStakeOvm) / (totalSupplyMain + totalSupplyOvm)
+    const percentStakedAll = snxData.systemStakingPercent
 
 
 
