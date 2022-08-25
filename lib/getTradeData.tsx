@@ -46,12 +46,17 @@ export const tradeData = async () => {
         col1:"KWENTA",
         col2: (await getFutures()).kwentaAll.yo.trades,
         col3: (await getFutures()).kwentaAll.yo.volume.toNumber()
+      }),
+      tradeFeeArrTemp.push({
+        name:"KWENTA",
+        value: (await getFutures()).kwentaAll.totalFee.fees,
       })
+      console.log(tradeFeeArrTemp)
     }
 
     // reduce other in tradeDataArr and tradeFeeArr
 
-    const tradeDataArr:any[] = tradeDataArrTemp.reduce((acc, cur) => {
+    const tradeDataArr:any[] = await tradeDataArrTemp.reduce((acc, cur) => {
       const { col1, col2, col3 } = cur;
       const item = acc.find((it: { col1: string }) => it.col1 === col1);
       if (item) {
@@ -163,6 +168,15 @@ export const tradeData = async () => {
       return obj
     });
 
+    const dayFeeDataArr: any[] = dayEpochTradeData.map((item) => {
+      const partner = item.partner === "0" ? "LYRA" : item.partner
+      const obj = {
+        name: partner,
+        value: item.usdFees.toNumber(),
+      };
+      return obj;
+    });
+
     
 
     if (network === optimism_url){
@@ -177,11 +191,24 @@ export const tradeData = async () => {
       stringKey === "thirty" ? (await getFutures()).kwentaThirty.yo.trades :
       stringKey === "ninety" ? (await getFutures()).kwentaNinety.yo.trades :
       0
+      
+      const futuresFee = stringKey === "daily" ? (await getFutures()).kwentaDaily.totalFee.fees : 
+      stringKey === "seven" ? (await getFutures()).kwentaSeven.totalFee.fees :
+      stringKey === "thirty" ? (await getFutures()).kwentaThirty.totalFee.fees :
+      stringKey === "ninety" ? (await getFutures()).kwentaNinety.totalFee.fees :
+      0
+
       dayTradeDataArr.push({
         col1:"KWENTA",
         col2: futuresTrades,
         col3: futuresVol
       })
+
+      dayFeeDataArr.push({
+        name:"KWENTA",
+        value: futuresFee
+      })
+
     }
 
     const dayTradeStats:any[] = dayTradeDataArr.reduce((acc, cur) => {
@@ -204,28 +231,12 @@ export const tradeData = async () => {
       return sum + cur.col3
     },0)
 
-    const dayTradeNum2 = dayEpochTradeData.reduce((sum, cur) => {
-      return sum + cur.trades.toNumber();
-    }, 0)
 
-    const dayVol2 = dayEpochTradeData.reduce((sum, cur) => {
-      return sum + cur.usdVolume.toNumber();
-    }, 0)
-
-    const dayTotalFee = dayEpochTradeData.reduce((sum, cur) => {
-      return sum + cur.usdFees.toNumber();
-    }, 0)
+   
 
     //const dayFeeDataArr: any[] = [];
 
-    const dayFeeDataArr: any[] = dayEpochTradeData.map((item) => {
-      const partner = item.partner === "0" ? "LYRA" : item.partner
-      const obj = {
-        name: partner,
-        value: item.usdFees.toNumber(),
-      };
-      return obj;
-    });
+  
 
     const dayFeeDataPrep = dayFeeDataArr.reduce((sum, cur) => {
       const { name, value } = cur;
@@ -233,6 +244,10 @@ export const tradeData = async () => {
       item ? (item.value += value) : sum.push({ name, value });
       return sum;
     }, []);
+
+    const dayTotalFee = dayFeeDataArr.reduce((sum, cur) => {
+      return sum + cur.value;
+    }, 0)
 
     const dayFeeData = dayFeeDataPrep.map((e: any) => {
       const percent = formatPercentDec.format(e.value / dayTotalFee)
@@ -242,6 +257,7 @@ export const tradeData = async () => {
         percent: percent,
       }
     })
+
 
 
 

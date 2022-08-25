@@ -1,6 +1,8 @@
+//@ts-nocheck 
+
 import Wei, { WeiSource, wei } from "@synthetixio/wei";
-import axios from "codegen-graph-ts/build/src/lib/axios";
-import generateGql from "codegen-graph-ts/build/src/lib/gql";
+import axios from "@synthetixio/codegen-graph-ts/build/src/lib/axios";
+import generateGql from "@synthetixio/codegen-graph-ts/build/src/lib/gql";
 export type SingleQueryOptions = {
     id: string;
     block?: {
@@ -68,7 +70,6 @@ export type AccountFlaggedForLiquidationFilter = {
     collateral_lte?: WeiSource | null;
     collateral_in?: WeiSource[];
     collateral_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type AccountFlaggedForLiquidationResult = {
     id: string;
@@ -207,7 +208,6 @@ export type AccountLiquidatedFilter = {
     time_lte?: WeiSource | null;
     time_in?: WeiSource[];
     time_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type AccountLiquidatedResult = {
     id: string;
@@ -324,7 +324,6 @@ export type AccountRemovedFromLiquidationFilter = {
     time_lte?: WeiSource | null;
     time_in?: WeiSource[];
     time_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type AccountRemovedFromLiquidationResult = {
     id: string;
@@ -409,7 +408,6 @@ export type ActiveStakerFilter = {
     id_lte?: string | null;
     id_in?: string[];
     id_not_in?: string[];
-    _change_block?: any | null;
 };
 export type ActiveStakerResult = {
     id: string;
@@ -502,6 +500,7 @@ export type AtomicSynthExchangeFilter = {
     account_ends_with_nocase?: string | null;
     account_not_ends_with?: string | null;
     account_not_ends_with_nocase?: string | null;
+    account_?: Exchanger_filterFilter | null;
     fromSynth?: string | null;
     fromSynth_not?: string | null;
     fromSynth_gt?: string | null;
@@ -522,6 +521,7 @@ export type AtomicSynthExchangeFilter = {
     fromSynth_ends_with_nocase?: string | null;
     fromSynth_not_ends_with?: string | null;
     fromSynth_not_ends_with_nocase?: string | null;
+    fromSynth_?: Synth_filterFilter | null;
     toSynth?: string | null;
     toSynth_not?: string | null;
     toSynth_gt?: string | null;
@@ -542,6 +542,7 @@ export type AtomicSynthExchangeFilter = {
     toSynth_ends_with_nocase?: string | null;
     toSynth_not_ends_with?: string | null;
     toSynth_not_ends_with_nocase?: string | null;
+    toSynth_?: Synth_filterFilter | null;
     fromAmount?: WeiSource | null;
     fromAmount_not?: WeiSource | null;
     fromAmount_gt?: WeiSource | null;
@@ -604,7 +605,6 @@ export type AtomicSynthExchangeFilter = {
     gasPrice_lte?: WeiSource | null;
     gasPrice_in?: WeiSource[];
     gasPrice_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type AtomicSynthExchangeResult = {
     id: string;
@@ -801,7 +801,6 @@ export type BurnedFilter = {
     block_lte?: WeiSource | null;
     block_in?: WeiSource[];
     block_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type BurnedResult = {
     id: string;
@@ -994,7 +993,6 @@ export type CandleFilter = {
     aggregatedPrices_lte?: WeiSource | null;
     aggregatedPrices_in?: WeiSource[];
     aggregatedPrices_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type CandleResult = {
     id: string;
@@ -1159,7 +1157,6 @@ export type CollateralDepositedFilter = {
     timestamp_lte?: WeiSource | null;
     timestamp_in?: WeiSource[];
     timestamp_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type CollateralDepositedResult = {
     id: string;
@@ -1300,7 +1297,6 @@ export type CollateralWithdrawnFilter = {
     timestamp_lte?: WeiSource | null;
     timestamp_in?: WeiSource[];
     timestamp_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type CollateralWithdrawnResult = {
     id: string;
@@ -1419,7 +1415,6 @@ export type DailyBurnedFilter = {
     totalDebt_lte?: WeiSource | null;
     totalDebt_in?: WeiSource[];
     totalDebt_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type DailyBurnedResult = {
     id: string;
@@ -1564,7 +1559,6 @@ export type DailyCandleFilter = {
     timestamp_lte?: WeiSource | null;
     timestamp_in?: WeiSource[];
     timestamp_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type DailyCandleResult = {
     id: string;
@@ -1725,7 +1719,6 @@ export type DailyExchangePartnerFilter = {
     timestamp_lte?: WeiSource | null;
     timestamp_in?: WeiSource[];
     timestamp_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type DailyExchangePartnerResult = {
     id: string;
@@ -1844,7 +1837,6 @@ export type DailyIssuedFilter = {
     totalDebt_lte?: WeiSource | null;
     totalDebt_in?: WeiSource[];
     totalDebt_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type DailyIssuedResult = {
     id: string;
@@ -1991,7 +1983,6 @@ export type DebtSnapshotFilter = {
     debtEntryAtIndex_lte?: WeiSource | null;
     debtEntryAtIndex_in?: WeiSource[];
     debtEntryAtIndex_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type DebtSnapshotResult = {
     id: string;
@@ -2152,7 +2143,6 @@ export type DebtStateFilter = {
     debtRatio_lte?: WeiSource | null;
     debtRatio_in?: WeiSource[];
     debtRatio_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type DebtStateResult = {
     id: string;
@@ -2283,7 +2273,6 @@ export type DelegatedWalletFilter = {
     canExchange_not?: boolean | null;
     canExchange_in?: boolean[];
     canExchange_not_in?: boolean[];
-    _change_block?: any | null;
 };
 export type DelegatedWalletResult = {
     id: string;
@@ -2450,7 +2439,6 @@ export type ExchangeEntryAppendedFilter = {
     roundIdForDest_lte?: WeiSource | null;
     roundIdForDest_in?: WeiSource[];
     roundIdForDest_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type ExchangeEntryAppendedResult = {
     id: string;
@@ -2637,7 +2625,6 @@ export type ExchangeEntrySettledFilter = {
     exchangeTimestamp_lte?: WeiSource | null;
     exchangeTimestamp_in?: WeiSource[];
     exchangeTimestamp_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type ExchangeEntrySettledResult = {
     id: string;
@@ -2772,7 +2759,6 @@ export type ExchangeFeeFilter = {
     fee_lte?: WeiSource | null;
     fee_in?: WeiSource[];
     fee_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type ExchangeFeeResult = {
     id: string;
@@ -2875,7 +2861,6 @@ export type ExchangePartnerFilter = {
     trades_lte?: WeiSource | null;
     trades_in?: WeiSource[];
     trades_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type ExchangePartnerResult = {
     id: string;
@@ -2986,6 +2971,7 @@ export type ExchangeRebateFilter = {
     account_ends_with_nocase?: string | null;
     account_not_ends_with?: string | null;
     account_not_ends_with_nocase?: string | null;
+    account_?: Exchanger_filterFilter | null;
     currencyKey?: string | null;
     currencyKey_not?: string | null;
     currencyKey_in?: string[];
@@ -3032,7 +3018,6 @@ export type ExchangeRebateFilter = {
     block_lte?: WeiSource | null;
     block_in?: WeiSource[];
     block_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type ExchangeRebateResult = {
     id: string;
@@ -3167,6 +3152,7 @@ export type ExchangeReclaimFilter = {
     account_ends_with_nocase?: string | null;
     account_not_ends_with?: string | null;
     account_not_ends_with_nocase?: string | null;
+    account_?: Exchanger_filterFilter | null;
     currencyKey?: string | null;
     currencyKey_not?: string | null;
     currencyKey_in?: string[];
@@ -3213,7 +3199,6 @@ export type ExchangeReclaimFilter = {
     block_lte?: WeiSource | null;
     block_in?: WeiSource[];
     block_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type ExchangeReclaimResult = {
     id: string;
@@ -3372,6 +3357,7 @@ export type ExchangerFilter = {
     synth_ends_with_nocase?: string | null;
     synth_not_ends_with?: string | null;
     synth_not_ends_with_nocase?: string | null;
+    synth_?: Synth_filterFilter | null;
     firstSeen?: WeiSource | null;
     firstSeen_not?: WeiSource | null;
     firstSeen_gt?: WeiSource | null;
@@ -3418,7 +3404,8 @@ export type ExchangerFilter = {
     balances_contains_nocase?: string[];
     balances_not_contains?: string[];
     balances_not_contains_nocase?: string[];
-    _change_block?: any | null;
+    balances_?: LatestSynthBalance_filterFilter | null;
+    exchanges_?: SynthExchange_filterFilter | null;
 };
 export type ExchangerResult = {
     id: string;
@@ -3597,7 +3584,6 @@ export type FeePeriodFilter = {
     rewardsClaimed_lte?: WeiSource | null;
     rewardsClaimed_in?: WeiSource[];
     rewardsClaimed_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type FeePeriodResult = {
     id: string;
@@ -3691,6 +3677,144 @@ export const getFeePeriods = async function <K extends keyof FeePeriodResult>(ur
     } while (paginationKey && (options.first && results.length < options.first));
     return options.first ? results.slice(0, options.first) : results;
 };
+export type FeeRateFilter = {
+    id?: string | null;
+    id_not?: string | null;
+    id_gt?: string | null;
+    id_lt?: string | null;
+    id_gte?: string | null;
+    id_lte?: string | null;
+    id_in?: string[];
+    id_not_in?: string[];
+    setting?: string | null;
+    setting_not?: string | null;
+    setting_gt?: string | null;
+    setting_lt?: string | null;
+    setting_gte?: string | null;
+    setting_lte?: string | null;
+    setting_in?: string[];
+    setting_not_in?: string[];
+    setting_contains?: string | null;
+    setting_contains_nocase?: string | null;
+    setting_not_contains?: string | null;
+    setting_not_contains_nocase?: string | null;
+    setting_starts_with?: string | null;
+    setting_starts_with_nocase?: string | null;
+    setting_not_starts_with?: string | null;
+    setting_not_starts_with_nocase?: string | null;
+    setting_ends_with?: string | null;
+    setting_ends_with_nocase?: string | null;
+    setting_not_ends_with?: string | null;
+    setting_not_ends_with_nocase?: string | null;
+    synth?: string | null;
+    synth_not?: string | null;
+    synth_gt?: string | null;
+    synth_lt?: string | null;
+    synth_gte?: string | null;
+    synth_lte?: string | null;
+    synth_in?: string[];
+    synth_not_in?: string[];
+    synth_contains?: string | null;
+    synth_contains_nocase?: string | null;
+    synth_not_contains?: string | null;
+    synth_not_contains_nocase?: string | null;
+    synth_starts_with?: string | null;
+    synth_starts_with_nocase?: string | null;
+    synth_not_starts_with?: string | null;
+    synth_not_starts_with_nocase?: string | null;
+    synth_ends_with?: string | null;
+    synth_ends_with_nocase?: string | null;
+    synth_not_ends_with?: string | null;
+    synth_not_ends_with_nocase?: string | null;
+    rate?: WeiSource | null;
+    rate_not?: WeiSource | null;
+    rate_gt?: WeiSource | null;
+    rate_lt?: WeiSource | null;
+    rate_gte?: WeiSource | null;
+    rate_lte?: WeiSource | null;
+    rate_in?: WeiSource[];
+    rate_not_in?: WeiSource[];
+};
+export type FeeRateResult = {
+    id: string;
+    setting: string;
+    synth: string | null;
+    rate: Wei;
+};
+export type FeeRateFields = {
+    id: true;
+    setting: true;
+    synth: true;
+    rate: true;
+};
+export type FeeRateArgs<K extends keyof FeeRateResult> = {
+    [Property in keyof Pick<FeeRateFields, K>]: FeeRateFields[Property];
+};
+export const getFeeRateById = async function <K extends keyof FeeRateResult>(url: string, options: SingleQueryOptions, args: FeeRateArgs<K>): Promise<Pick<FeeRateResult, K>> {
+    const res = await axios.post(url, {
+        query: generateGql("feeRate", options, args)
+    });
+    const r = res.data as any;
+    if (r.errors && r.errors.length) {
+        throw new Error(r.errors[0].message);
+    }
+    const obj = (r.data[Object.keys(r.data)[0]] as any);
+    const formattedObj: any = {};
+    if (obj["id"])
+        formattedObj["id"] = obj["id"];
+    if (obj["setting"])
+        formattedObj["setting"] = obj["setting"];
+    if (obj["synth"])
+        formattedObj["synth"] = obj["synth"];
+    if (obj["rate"])
+        formattedObj["rate"] = wei(obj["rate"]);
+    return formattedObj as Pick<FeeRateResult, K>;
+};
+export const getFeeRates = async function <K extends keyof FeeRateResult>(url: string, options: MultiQueryOptions<FeeRateFilter, FeeRateResult>, args: FeeRateArgs<K>): Promise<Pick<FeeRateResult, K>[]> {
+    const paginatedOptions: Partial<MultiQueryOptions<FeeRateFilter, FeeRateResult>> = { ...options };
+    let paginationKey: keyof FeeRateFilter | null = null;
+    let paginationValue = "";
+    if (options.first && options.first > MAX_PAGE) {
+        paginatedOptions.first = MAX_PAGE;
+        paginatedOptions.orderBy = options.orderBy || "id";
+        paginatedOptions.orderDirection = options.orderDirection || "asc";
+        paginationKey = paginatedOptions.orderBy + (paginatedOptions.orderDirection === "asc" ? "_gt" : "_lt") as keyof FeeRateFilter;
+        paginatedOptions.where = { ...options.where };
+    }
+    let results: Pick<FeeRateResult, K>[] = [];
+    do {
+        if (paginationKey && paginationValue)
+            paginatedOptions.where![paginationKey] = paginationValue as any;
+        const res = await axios.post(url, {
+            query: generateGql("feeRates", paginatedOptions, args)
+        });
+        const r = res.data as any;
+        if (r.errors && r.errors.length) {
+            throw new Error(r.errors[0].message);
+        }
+        const rawResults = r.data[Object.keys(r.data)[0]] as any[];
+        const newResults = rawResults.map((obj) => {
+            const formattedObj: any = {};
+            if (obj["id"])
+                formattedObj["id"] = obj["id"];
+            if (obj["setting"])
+                formattedObj["setting"] = obj["setting"];
+            if (obj["synth"])
+                formattedObj["synth"] = obj["synth"];
+            if (obj["rate"])
+                formattedObj["rate"] = wei(obj["rate"]);
+            return formattedObj as Pick<FeeRateResult, K>;
+        });
+        results = results.concat(newResults);
+        if (newResults.length < 1000) {
+            break;
+        }
+        if (paginationKey) {
+            paginationValue = rawResults[rawResults.length - 1][paginatedOptions.orderBy!];
+        }
+    } while (paginationKey && (options.first && results.length < options.first));
+    return options.first ? results.slice(0, options.first) : results;
+};
 export type FeesClaimedFilter = {
     id?: string | null;
     id_not?: string | null;
@@ -3738,7 +3862,6 @@ export type FeesClaimedFilter = {
     timestamp_lte?: WeiSource | null;
     timestamp_in?: WeiSource[];
     timestamp_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type FeesClaimedResult = {
     id: string;
@@ -3832,6 +3955,78 @@ export const getFeesClaimeds = async function <K extends keyof FeesClaimedResult
     } while (paginationKey && (options.first && results.length < options.first));
     return options.first ? results.slice(0, options.first) : results;
 };
+export type FuturesMarketFilter = {
+    id?: string | null;
+    id_not?: string | null;
+    id_gt?: string | null;
+    id_lt?: string | null;
+    id_gte?: string | null;
+    id_lte?: string | null;
+    id_in?: string[];
+    id_not_in?: string[];
+};
+export type FuturesMarketResult = {
+    id: string;
+};
+export type FuturesMarketFields = {
+    id: true;
+};
+export type FuturesMarketArgs<K extends keyof FuturesMarketResult> = {
+    [Property in keyof Pick<FuturesMarketFields, K>]: FuturesMarketFields[Property];
+};
+export const getFuturesMarketById = async function <K extends keyof FuturesMarketResult>(url: string, options: SingleQueryOptions, args: FuturesMarketArgs<K>): Promise<Pick<FuturesMarketResult, K>> {
+    const res = await axios.post(url, {
+        query: generateGql("futuresMarket", options, args)
+    });
+    const r = res.data as any;
+    if (r.errors && r.errors.length) {
+        throw new Error(r.errors[0].message);
+    }
+    const obj = (r.data[Object.keys(r.data)[0]] as any);
+    const formattedObj: any = {};
+    if (obj["id"])
+        formattedObj["id"] = obj["id"];
+    return formattedObj as Pick<FuturesMarketResult, K>;
+};
+export const getFuturesMarkets = async function <K extends keyof FuturesMarketResult>(url: string, options: MultiQueryOptions<FuturesMarketFilter, FuturesMarketResult>, args: FuturesMarketArgs<K>): Promise<Pick<FuturesMarketResult, K>[]> {
+    const paginatedOptions: Partial<MultiQueryOptions<FuturesMarketFilter, FuturesMarketResult>> = { ...options };
+    let paginationKey: keyof FuturesMarketFilter | null = null;
+    let paginationValue = "";
+    if (options.first && options.first > MAX_PAGE) {
+        paginatedOptions.first = MAX_PAGE;
+        paginatedOptions.orderBy = options.orderBy || "id";
+        paginatedOptions.orderDirection = options.orderDirection || "asc";
+        paginationKey = paginatedOptions.orderBy + (paginatedOptions.orderDirection === "asc" ? "_gt" : "_lt") as keyof FuturesMarketFilter;
+        paginatedOptions.where = { ...options.where };
+    }
+    let results: Pick<FuturesMarketResult, K>[] = [];
+    do {
+        if (paginationKey && paginationValue)
+            paginatedOptions.where![paginationKey] = paginationValue as any;
+        const res = await axios.post(url, {
+            query: generateGql("futuresMarkets", paginatedOptions, args)
+        });
+        const r = res.data as any;
+        if (r.errors && r.errors.length) {
+            throw new Error(r.errors[0].message);
+        }
+        const rawResults = r.data[Object.keys(r.data)[0]] as any[];
+        const newResults = rawResults.map((obj) => {
+            const formattedObj: any = {};
+            if (obj["id"])
+                formattedObj["id"] = obj["id"];
+            return formattedObj as Pick<FuturesMarketResult, K>;
+        });
+        results = results.concat(newResults);
+        if (newResults.length < 1000) {
+            break;
+        }
+        if (paginationKey) {
+            paginationValue = rawResults[rawResults.length - 1][paginatedOptions.orderBy!];
+        }
+    } while (paginationKey && (options.first && results.length < options.first));
+    return options.first ? results.slice(0, options.first) : results;
+};
 export type InversePricingInfoFilter = {
     id?: string | null;
     id_not?: string | null;
@@ -3869,7 +4064,6 @@ export type InversePricingInfoFilter = {
     entryPoint_lte?: WeiSource | null;
     entryPoint_in?: WeiSource[];
     entryPoint_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type InversePricingInfoResult = {
     id: string;
@@ -4024,7 +4218,6 @@ export type IssuedFilter = {
     block_lte?: WeiSource | null;
     block_in?: WeiSource[];
     block_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type IssuedResult = {
     id: string;
@@ -4133,7 +4326,6 @@ export type IssuerFilter = {
     id_lte?: string | null;
     id_in?: string[];
     id_not_in?: string[];
-    _change_block?: any | null;
 };
 export type IssuerResult = {
     id: string;
@@ -4220,7 +4412,6 @@ export type LatestRateFilter = {
     aggregator_not_in?: string[];
     aggregator_contains?: string | null;
     aggregator_not_contains?: string | null;
-    _change_block?: any | null;
 };
 export type LatestRateResult = {
     id: string;
@@ -4367,7 +4558,7 @@ export type LatestSynthBalanceFilter = {
     synth_ends_with_nocase?: string | null;
     synth_not_ends_with?: string | null;
     synth_not_ends_with_nocase?: string | null;
-    _change_block?: any | null;
+    synth_?: Synth_filterFilter | null;
 };
 export type LatestSynthBalanceResult = {
     id: string;
@@ -4576,7 +4767,6 @@ export type LoanFilter = {
     hasPartialLiquidations_not?: boolean | null;
     hasPartialLiquidations_in?: boolean[];
     hasPartialLiquidations_not_in?: boolean[];
-    _change_block?: any | null;
 };
 export type LoanResult = {
     id: string;
@@ -4737,7 +4927,6 @@ export type LoanLiquidatedFilter = {
     timestamp_lte?: WeiSource | null;
     timestamp_in?: WeiSource[];
     timestamp_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type LoanLiquidatedResult = {
     id: string;
@@ -4878,7 +5067,6 @@ export type LoanPartiallyLiquidatedFilter = {
     timestamp_lte?: WeiSource | null;
     timestamp_in?: WeiSource[];
     timestamp_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type LoanPartiallyLiquidatedResult = {
     id: string;
@@ -5025,7 +5213,6 @@ export type LoanRepaidFilter = {
     timestamp_lte?: WeiSource | null;
     timestamp_in?: WeiSource[];
     timestamp_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type LoanRepaidResult = {
     id: string;
@@ -5178,7 +5365,6 @@ export type RateUpdateFilter = {
     timestamp_lte?: WeiSource | null;
     timestamp_in?: WeiSource[];
     timestamp_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type RateUpdateResult = {
     id: string;
@@ -5297,7 +5483,6 @@ export type RewardEscrowHolderFilter = {
     vestedBalanceOf_lte?: WeiSource | null;
     vestedBalanceOf_in?: WeiSource[];
     vestedBalanceOf_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type RewardEscrowHolderResult = {
     id: string;
@@ -5454,7 +5639,6 @@ export type SNXHolderFilter = {
     mints_lte?: WeiSource | null;
     mints_in?: WeiSource[];
     mints_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type SNXHolderResult = {
     id: string;
@@ -5601,6 +5785,7 @@ export type ShortFilter = {
     contractData_ends_with_nocase?: string | null;
     contractData_not_ends_with?: string | null;
     contractData_not_ends_with_nocase?: string | null;
+    contractData_?: ShortContract_filterFilter | null;
     txHash?: string | null;
     txHash_not?: string | null;
     txHash_gt?: string | null;
@@ -5691,7 +5876,9 @@ export type ShortFilter = {
     closedAt_lte?: WeiSource | null;
     closedAt_in?: WeiSource[];
     closedAt_not_in?: WeiSource[];
-    _change_block?: any | null;
+    liquidations_?: ShortLiquidation_filterFilter | null;
+    collateralChanges_?: ShortCollateralChange_filterFilter | null;
+    loanChanges_?: ShortLoanChange_filterFilter | null;
 };
 export type ShortResult = {
     id: string;
@@ -5894,6 +6081,7 @@ export type ShortCollateralChangeFilter = {
     short_ends_with_nocase?: string | null;
     short_not_ends_with?: string | null;
     short_not_ends_with_nocase?: string | null;
+    short_?: Short_filterFilter | null;
     timestamp?: WeiSource | null;
     timestamp_not?: WeiSource | null;
     timestamp_gt?: WeiSource | null;
@@ -5910,7 +6098,6 @@ export type ShortCollateralChangeFilter = {
     blockNumber_lte?: WeiSource | null;
     blockNumber_in?: WeiSource[];
     blockNumber_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type ShortCollateralChangeResult = {
     id: string;
@@ -6019,6 +6206,8 @@ export type ShortContractFilter = {
     id_lte?: string | null;
     id_in?: string[];
     id_not_in?: string[];
+    shorts_?: Short_filterFilter | null;
+    contractUpdates_?: ShortContractUpdate_filterFilter | null;
     minCratio?: WeiSource | null;
     minCratio_not?: WeiSource | null;
     minCratio_gt?: WeiSource | null;
@@ -6069,7 +6258,6 @@ export type ShortContractFilter = {
     canOpenLoans_not?: boolean | null;
     canOpenLoans_in?: boolean[];
     canOpenLoans_not_in?: boolean[];
-    _change_block?: any | null;
 };
 export type ShortContractResult = {
     id: string;
@@ -6256,6 +6444,7 @@ export type ShortContractUpdateFilter = {
     contractData_ends_with_nocase?: string | null;
     contractData_not_ends_with?: string | null;
     contractData_not_ends_with_nocase?: string | null;
+    contractData_?: ShortContract_filterFilter | null;
     timestamp?: WeiSource | null;
     timestamp_not?: WeiSource | null;
     timestamp_gt?: WeiSource | null;
@@ -6272,7 +6461,6 @@ export type ShortContractUpdateFilter = {
     blockNumber_lte?: WeiSource | null;
     blockNumber_in?: WeiSource[];
     blockNumber_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type ShortContractUpdateResult = {
     id: string;
@@ -6421,6 +6609,7 @@ export type ShortLiquidationFilter = {
     short_ends_with_nocase?: string | null;
     short_not_ends_with?: string | null;
     short_not_ends_with_nocase?: string | null;
+    short_?: Short_filterFilter | null;
     timestamp?: WeiSource | null;
     timestamp_not?: WeiSource | null;
     timestamp_gt?: WeiSource | null;
@@ -6437,7 +6626,6 @@ export type ShortLiquidationFilter = {
     blockNumber_lte?: WeiSource | null;
     blockNumber_in?: WeiSource[];
     blockNumber_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type ShortLiquidationResult = {
     id: string;
@@ -6592,6 +6780,7 @@ export type ShortLoanChangeFilter = {
     short_ends_with_nocase?: string | null;
     short_not_ends_with?: string | null;
     short_not_ends_with_nocase?: string | null;
+    short_?: Short_filterFilter | null;
     rate?: WeiSource | null;
     rate_not?: WeiSource | null;
     rate_gt?: WeiSource | null;
@@ -6616,7 +6805,6 @@ export type ShortLoanChangeFilter = {
     blockNumber_lte?: WeiSource | null;
     blockNumber_in?: WeiSource[];
     blockNumber_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type ShortLoanChangeResult = {
     id: string;
@@ -6779,7 +6967,6 @@ export type SynthFilter = {
     totalSupply_lte?: WeiSource | null;
     totalSupply_in?: WeiSource[];
     totalSupply_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type SynthResult = {
     id: string;
@@ -6932,7 +7119,7 @@ export type SynthBalanceFilter = {
     synth_ends_with_nocase?: string | null;
     synth_not_ends_with?: string | null;
     synth_not_ends_with_nocase?: string | null;
-    _change_block?: any | null;
+    synth_?: Synth_filterFilter | null;
 };
 export type SynthBalanceResult = {
     id: string;
@@ -7041,7 +7228,6 @@ export type SynthByCurrencyKeyFilter = {
     proxyAddress_not_in?: string[];
     proxyAddress_contains?: string | null;
     proxyAddress_not_contains?: string | null;
-    _change_block?: any | null;
 };
 export type SynthByCurrencyKeyResult = {
     id: string;
@@ -7140,6 +7326,7 @@ export type SynthExchangeFilter = {
     account_ends_with_nocase?: string | null;
     account_not_ends_with?: string | null;
     account_not_ends_with_nocase?: string | null;
+    account_?: Exchanger_filterFilter | null;
     fromSynth?: string | null;
     fromSynth_not?: string | null;
     fromSynth_gt?: string | null;
@@ -7160,6 +7347,7 @@ export type SynthExchangeFilter = {
     fromSynth_ends_with_nocase?: string | null;
     fromSynth_not_ends_with?: string | null;
     fromSynth_not_ends_with_nocase?: string | null;
+    fromSynth_?: Synth_filterFilter | null;
     toSynth?: string | null;
     toSynth_not?: string | null;
     toSynth_gt?: string | null;
@@ -7180,6 +7368,7 @@ export type SynthExchangeFilter = {
     toSynth_ends_with_nocase?: string | null;
     toSynth_not_ends_with?: string | null;
     toSynth_not_ends_with_nocase?: string | null;
+    toSynth_?: Synth_filterFilter | null;
     fromAmount?: WeiSource | null;
     fromAmount_not?: WeiSource | null;
     fromAmount_gt?: WeiSource | null;
@@ -7242,7 +7431,6 @@ export type SynthExchangeFilter = {
     gasPrice_lte?: WeiSource | null;
     gasPrice_in?: WeiSource[];
     gasPrice_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type SynthExchangeResult = {
     id: string;
@@ -7397,7 +7585,6 @@ export type SynthetixFilter = {
     snxHolders_lte?: WeiSource | null;
     snxHolders_in?: WeiSource[];
     snxHolders_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type SynthetixResult = {
     id: string;
@@ -7638,7 +7825,6 @@ export type SystemSettingFilter = {
     atomicTwapWindow_lte?: WeiSource | null;
     atomicTwapWindow_in?: WeiSource[];
     atomicTwapWindow_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type SystemSettingResult = {
     id: string;
@@ -7855,7 +8041,6 @@ export type TemporaryExchangePartnerTrackerFilter = {
     partner_ends_with_nocase?: string | null;
     partner_not_ends_with?: string | null;
     partner_not_ends_with_nocase?: string | null;
-    _change_block?: any | null;
 };
 export type TemporaryExchangePartnerTrackerResult = {
     id: string;
@@ -7954,6 +8139,26 @@ export type TotalFilter = {
     timestamp_lte?: WeiSource | null;
     timestamp_in?: WeiSource[];
     timestamp_not_in?: WeiSource[];
+    product?: string | null;
+    product_not?: string | null;
+    product_gt?: string | null;
+    product_lt?: string | null;
+    product_gte?: string | null;
+    product_lte?: string | null;
+    product_in?: string[];
+    product_not_in?: string[];
+    product_contains?: string | null;
+    product_contains_nocase?: string | null;
+    product_not_contains?: string | null;
+    product_not_contains_nocase?: string | null;
+    product_starts_with?: string | null;
+    product_starts_with_nocase?: string | null;
+    product_not_starts_with?: string | null;
+    product_not_starts_with_nocase?: string | null;
+    product_ends_with?: string | null;
+    product_ends_with_nocase?: string | null;
+    product_not_ends_with?: string | null;
+    product_not_ends_with_nocase?: string | null;
     period?: WeiSource | null;
     period_not?: WeiSource | null;
     period_gt?: WeiSource | null;
@@ -7990,6 +8195,7 @@ export type TotalFilter = {
     synth_ends_with_nocase?: string | null;
     synth_not_ends_with?: string | null;
     synth_not_ends_with_nocase?: string | null;
+    synth_?: Synth_filterFilter | null;
     trades?: WeiSource | null;
     trades_not?: WeiSource | null;
     trades_gt?: WeiSource | null;
@@ -8030,11 +8236,11 @@ export type TotalFilter = {
     totalFeesGeneratedInUSD_lte?: WeiSource | null;
     totalFeesGeneratedInUSD_in?: WeiSource[];
     totalFeesGeneratedInUSD_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type TotalResult = {
     id: string;
     timestamp: Wei;
+    product: string;
     period: Wei;
     bucketMagnitude: Wei;
     synth: Partial<SynthResult> | null;
@@ -8047,6 +8253,7 @@ export type TotalResult = {
 export type TotalFields = {
     id: true;
     timestamp: true;
+    product: true;
     period: true;
     bucketMagnitude: true;
     synth: SynthFields;
@@ -8073,6 +8280,8 @@ export const getTotalById = async function <K extends keyof TotalResult>(url: st
         formattedObj["id"] = obj["id"];
     if (obj["timestamp"])
         formattedObj["timestamp"] = wei(obj["timestamp"], 0);
+    if (obj["product"])
+        formattedObj["product"] = obj["product"];
     if (obj["period"])
         formattedObj["period"] = wei(obj["period"], 0);
     if (obj["bucketMagnitude"])
@@ -8120,6 +8329,8 @@ export const getTotals = async function <K extends keyof TotalResult>(url: strin
                 formattedObj["id"] = obj["id"];
             if (obj["timestamp"])
                 formattedObj["timestamp"] = wei(obj["timestamp"], 0);
+            if (obj["product"])
+                formattedObj["product"] = obj["product"];
             if (obj["period"])
                 formattedObj["period"] = wei(obj["period"], 0);
             if (obj["bucketMagnitude"])
@@ -8165,7 +8376,6 @@ export type TotalActiveStakerFilter = {
     count_lte?: WeiSource | null;
     count_in?: WeiSource[];
     count_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type TotalActiveStakerResult = {
     id: string;
@@ -8260,7 +8470,6 @@ export type TotalDailyActiveStakerFilter = {
     count_lte?: WeiSource | null;
     count_in?: WeiSource[];
     count_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type TotalDailyActiveStakerResult = {
     id: string;
@@ -8425,7 +8634,6 @@ export type WrapperFilter = {
     totalFeesInUSD_lte?: WeiSource | null;
     totalFeesInUSD_in?: WeiSource[];
     totalFeesInUSD_not_in?: WeiSource[];
-    _change_block?: any | null;
 };
 export type WrapperResult = {
     id: string;
@@ -8612,7 +8820,6 @@ export type WrapperBurnFilter = {
     wrapperAddress_ends_with_nocase?: string | null;
     wrapperAddress_not_ends_with?: string | null;
     wrapperAddress_not_ends_with_nocase?: string | null;
-    _change_block?: any | null;
 };
 export type WrapperBurnResult = {
     id: string;
@@ -8793,7 +9000,6 @@ export type WrapperMintFilter = {
     wrapperAddress_ends_with_nocase?: string | null;
     wrapperAddress_not_ends_with?: string | null;
     wrapperAddress_not_ends_with_nocase?: string | null;
-    _change_block?: any | null;
 };
 export type WrapperMintResult = {
     id: string;
