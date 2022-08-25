@@ -159,7 +159,7 @@ export const tradeData = async () => {
     );
 
     const dayTradeDataArr: any[] = dayEpochTradeData.map((item) => {
-      const partner = item.partner === "0" ? "LYRA" : item.partner
+      const partner = item.partner === "0" ? "LYRA" : item.partner === "kkk" ? "OTHER" : item.partner
       const obj = {
         col1: partner,
         col2: item.trades.toNumber(),
@@ -169,7 +169,7 @@ export const tradeData = async () => {
     });
 
     const dayFeeDataArr: any[] = dayEpochTradeData.map((item) => {
-      const partner = item.partner === "0" ? "LYRA" : item.partner
+      const partner = item.partner === "0" ? "LYRA" : item.partner === "kkk" ? "OTHER" : item.partner
       const obj = {
         name: partner,
         value: item.usdFees.toNumber(),
