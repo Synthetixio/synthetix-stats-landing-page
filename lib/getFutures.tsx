@@ -49,7 +49,6 @@ export const getFutures = async () => {
       fees: 0
     })
 
-    console.log(`total fee getfutures ${totalFee.fees}`)
 
 
     return {

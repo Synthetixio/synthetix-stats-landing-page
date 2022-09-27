@@ -51,7 +51,6 @@ export const tradeData = async () => {
         name:"KWENTA",
         value: (await getFutures()).kwentaAll.totalFee.fees,
       })
-      console.log(tradeFeeArrTemp)
     }
 
     // reduce other in tradeDataArr and tradeFeeArr

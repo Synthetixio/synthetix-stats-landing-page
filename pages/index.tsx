@@ -58,6 +58,8 @@ const Home = (props: any) => {
           dayDataAll={props.theTVL.dayAll}
           weekDataAll={props.theTVL.weekAll}
           monthDataAll={props.theTVL.monthAll}
+          totalLoanMain={props.theTVL.mainCurrentLoan}
+          totalLoanOvm={props.theTVL.ovmCurrentLoan}
           click={netId}
         />
         <StakeAPY
