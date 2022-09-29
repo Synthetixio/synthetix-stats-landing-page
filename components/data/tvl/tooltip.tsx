@@ -18,9 +18,10 @@ const CustomTooltip = ({
 
   if (active) {
 
-    const debtVal = payload && payload[1].value
-    const wrapperVal = payload && payload[0].value
-    const tvl = debtVal && wrapperVal ? debtVal + wrapperVal : 0
+    const debtVal = payload && payload[2].value
+    const wrapperVal = payload && payload[1].value
+    const loanVal = payload && payload[0].value
+    const tvl = debtVal && wrapperVal && loanVal ? debtVal + wrapperVal + loanVal : 0
   
     return (
       <div className={styles.TTwrap}>
@@ -31,6 +32,8 @@ const CustomTooltip = ({
         <p className={styles.TTdebt}>{debtVal ? formatMoney.format(debtVal) : 0}</p>
         <h6 className={styles.TTheading}>Wrappers</h6>
         <p className={styles.TTwrapper}>{wrapperVal ? formatMoney.format(wrapperVal) : 0}</p>
+        <h6 className={styles.TTheading}>Loans</h6>
+        <p className={styles.TTloans}>{loanVal ? formatMoney.format(loanVal) : 0}</p>
       </div>
     );
   }

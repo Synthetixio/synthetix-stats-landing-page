@@ -29,6 +29,8 @@ interface TVL {
   totalDebtMain: number;
   totalWrapperOvm: number;
   totalWrapperMain: number;
+  totalLoanOvm: number;
+  totalLoanMain: number;
   click: number;
 }
 
@@ -48,6 +50,8 @@ const TotalValueLocked = ({
   totalDebtMain,
   totalWrapperOvm,
   totalWrapperMain,
+  totalLoanOvm,
+  totalLoanMain
 }: TVL) => {
 
   const optionMap = [
@@ -56,12 +60,12 @@ const TotalValueLocked = ({
     { value: 3, label: "1 Month" }
   ]
 
- 
+
 
   const [timeFrame, setTimeFrame] = useState(1);
 
 
-  
+
 
   const handleActive = (option: any) => {
     setTimeFrame(option.value);
@@ -69,16 +73,21 @@ const TotalValueLocked = ({
 
   // click === 1 ? mainnet : click === 10 ? optimism : click === 21 ? all networks
 
-  const totalValueLockedOvm = formatMoney.format(totalDebtOvm + totalWrapperOvm)
-  const totalValueLockedMain = formatMoney.format(totalDebtMain + totalWrapperMain)
-  const totalValueLockedAll = formatMoney.format((totalDebtMain + totalDebtOvm) + (totalWrapperMain + totalWrapperOvm))
+  const totalValueLockedOvm = formatMoney.format(totalDebtOvm + totalWrapperOvm + totalLoanOvm)
+  const totalValueLockedMain = formatMoney.format(totalDebtMain + totalWrapperMain + totalLoanMain)
+  const totalValueLockedAll = formatMoney.format((totalDebtMain + totalDebtOvm) + (totalWrapperMain + totalWrapperOvm) + (totalLoanMain + totalLoanOvm))
 
   const allDebt = formatMoney.format(totalDebtMain + totalDebtOvm)
   const allWrapper = formatMoney.format(totalWrapperMain + totalWrapperOvm)
+  const allLoans = formatMoney.format(totalLoanMain + totalLoanOvm)
+
   const ovmDebt = formatMoney.format(totalDebtOvm)
   const ovmWrapper = formatMoney.format(totalWrapperOvm)
+  const ovmLoan = formatMoney.format(totalLoanOvm)
+
   const mainDebt = formatMoney.format(totalDebtMain)
   const mainWrapper = formatMoney.format(totalWrapperMain)
+  const mainLoan = formatMoney.format(totalLoanMain)
 
   const ovmData = timeFrame === 1 ? dayDataOvm : timeFrame === 2 ? weekDataOvm : monthDataOvm
   const mainData = timeFrame === 1 ? dayDataMain : timeFrame === 2 ? weekDataMain : monthDataMain
@@ -131,14 +140,14 @@ const TotalValueLocked = ({
         <ResponsiveContainer>
           <AreaChart
             data={click === 1 ? mainData : click === 10 ? ovmData : allData}
-          
-           
+
+
           >
             <defs>
               <linearGradient id="wrapperL" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#ED1EFF" stopOpacity={1} />
                 <stop offset="95%" stopColor="#0b0b22" stopOpacity={0.1} />
-              
+
 
               </linearGradient>
               <linearGradient id="debtL" x1="0" y1="0" x2="0" y2="1">
@@ -146,11 +155,16 @@ const TotalValueLocked = ({
                 <stop offset="95%" stopColor="#0b0b22" stopOpacity={0.1} />
               </linearGradient>
 
+              <linearGradient id="loanL" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#fff" stopOpacity={1} />
+                <stop offset="95%" stopColor="#0b0b22" stopOpacity={0.1} />
+              </linearGradient>
+
               <filter id="shadow" height="200%">
                 <feDropShadow dx="0" dy="10" stdDeviation="10" />
               </filter>
 
-             
+
 
             </defs>
             <XAxis dataKey="date" fontSize={14} interval={"preserveStartEnd"} />
@@ -159,7 +173,17 @@ const TotalValueLocked = ({
               hide={true}
               interval="preserveStartEnd"
               tickCount={5}
-            
+
+            />
+
+            <Area
+              type="linear"
+              dataKey="loan"
+              fill="url(#loanL)"
+              fillOpacity={0.6}
+              stackId={2}
+              strokeWidth={5}
+              stroke="#fff"
             />
 
             <Area
@@ -182,7 +206,9 @@ const TotalValueLocked = ({
               strokeWidth={5}
               stroke="#31D8A4"
             />
-            
+
+
+
 
             <Tooltip
               content={<CustomToolTip />}
@@ -202,6 +228,11 @@ const TotalValueLocked = ({
         <div className={styles.wrapper}>
           <h5 className={styles.wrapperColor}>Wrappers</h5>
           <p className={styles.debtWrapVal}>{click === 1 ? mainWrapper : click === 10 ? ovmWrapper : allWrapper}</p>
+        </div>
+
+        <div className={styles.loan}>
+          <h5 className={styles.loanColor}>Loans</h5>
+          <p className={styles.debtWrapVal}>{click === 1 ? mainLoan : click === 10 ? ovmLoan : allLoans}</p>
         </div>
       </div>
     </div>
