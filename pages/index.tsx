@@ -1,50 +1,83 @@
-import NetworkNavBar from "../components/network/NetworkNavBar";
-import Subheader from "../components/subheader/Subheader";
-import { useState } from "react";
-import { getTVL } from "../lib/getTVL";
-import styles from "../styles/Main.module.css";
-import SnxStaked from "../components/data/snxStaked/SnxStaked";
-import TotalValueLocked from "../components/data/tvl/TotalValueLocked";
-import StakeAPY from "../components/data/stakeAPY/StakeAPY";
-import NumStaker from "../components/data/numStaker/numStaker";
-import TradeActivity from "../components/data/tradeActivity/TradeActivity";
-import Inflation from "../components/data/inflation/Inflation";
-import TradeFee from "../components/data/tradeFee/TradeFee";
-import { staker } from "../lib/getStaker";
-import { numStaker} from "../lib/getNumStaker"
-import { tradeData } from "../lib/getTradeData";
-import MoreStats from "../components/data/moreStats/MoreStats";
-import StartStaking from "../components/data/startStaking/StartStaking";
+import NetworkNavBar from '../components/network/NetworkNavBar'
+import Subheader from '../components/subheader/Subheader'
+import { useEffect, useState } from 'react'
+import { getTVL } from '../lib/getTVL'
+import { fetchDune } from '../lib/getDune'
+import styles from '../styles/Main.module.css'
+import SnxStaked from '../components/data/snxStaked/SnxStaked'
+import TotalValueLocked from '../components/data/tvl/TotalValueLocked'
+import StakeAPY from '../components/data/stakeAPY/StakeAPY'
+import NumStaker from '../components/data/numStaker/numStaker'
+import TradeActivity from '../components/data/tradeActivity/TradeActivity'
+import Inflation from '../components/data/inflation/Inflation'
+import TradeFee from '../components/data/tradeFee/TradeFee'
+import { staker } from '../lib/getStaker'
+import { numStaker } from '../lib/getNumStaker'
+import { tradeData } from '../lib/getTradeData'
+import MoreStats from '../components/data/moreStats/MoreStats'
+import StartStaking from '../components/data/startStaking/StartStaking'
 
 const Home = (props: any) => {
-
-  const [netId, setNetId] = useState<number>(20);
+  const [netId, setNetId] = useState<number>(20)
+  const [newData, setNewData] = useState<any>({})
 
   const handleNetwork = (buttons: any) => {
-    setNetId(buttons.id);
-  };
+    setNetId(buttons.id)
+  }
+
+  useEffect(() => {
+    (async () => {
+      const result = await fetchDune()
+      setNewData(result.latestResult)
+      console.log(result.latestResult);
+      
+    })()
+
+    return
+  }, [])
 
   return (
     <div>
       <Subheader />
-      <NetworkNavBar handle={handleNetwork} current={netId}/>
-   
+      <NetworkNavBar handle={handleNetwork} current={netId} />
 
       <div className={styles.container}>
         <SnxStaked
           click={netId}
-          percentStakeAll={props.stake.percentStakedAll}
-          percentStakeMain={props.stake.percentStakedMain}
-          percentStakeOvm={props.stake.percentStakedOvm}
-          stakeAmountAll={props.stake.totalStakeAll}
-          stakeAmountMain={props.stake.totalStakeMain}
-          stakeAmountOvm={props.stake.totalStakeOvm}
-          stakeValueAll={props.stake.stakeValueAll}
-          stakeValueMain={props.stake.stakeValueMain}
-          stakeValueOvm={props.stake.stakeValueOvm}
+          percentStakeAll={
+            newData.Total_stake_ratio / 100 || props.stake.percentStakedAll
+          }
+          percentStakeMain={
+            newData.L1_stake_ratio / 100 ||
+            props.stake.percentStakedMain}
+          percentStakeOvm={
+            newData.L2_stake_ratio / 100 ||
+            props.stake.percentStakedOvm}
+          stakeAmountAll={
+            newData.TVL_staked / newData.SNX_price ||
+            props.stake.totalStakeAll}
+          stakeAmountMain={
+            newData.TVL_L1_staked / newData.SNX_price ||
+            props.stake.totalStakeMain
+          }
+          stakeAmountOvm={
+            newData.TVL_L2_staked / newData.SNX_price ||
+            props.stake.totalStakeOvm
+          }
+          stakeValueAll={
+            newData.TVL_staked ||
+            props.stake.stakeValueAll
+          }
+          stakeValueMain={
+            newData.TVL_L1_Staked ||
+            props.stake.stakeValueMain}
+          stakeValueOvm={
+            newData.TVL_L2_Staked ||
+            props.stake.stakeValueOvm
+          }
         />
 
-<TotalValueLocked
+        <TotalValueLocked
           dayDataOvm={props.theTVL.dayOvm}
           weekDataOvm={props.theTVL.weekOvm}
           monthDataOvm={props.theTVL.monthOvm}
@@ -67,7 +100,7 @@ const Home = (props: any) => {
           avg={props.stake.apyAvg}
           ovm={props.stake.apyOvm}
           main={props.stake.apyMain}
-         />
+        />
         <NumStaker
           click={netId}
           currentStakerOvm={props.numberStake.currentStakerOvm}
@@ -82,10 +115,7 @@ const Home = (props: any) => {
           monthAll={props.numberStake.monthAll}
           monthMain={props.numberStake.monthMain}
           monthOvm={props.numberStake.monthOvm}
-
         />
-
-      
 
         <TradeActivity
           click={netId}
@@ -95,7 +125,6 @@ const Home = (props: any) => {
           totalTradeMain={props.trades.totalTradeMain}
           totalVolOvm={props.trades.totalVolOvm}
           totalTradeOvm={props.trades.totalTradeOvm}
-          
           tradeDataAll={props.trades.allTotalTradeData}
           sevenTradeDataMain={props.trades.sevenTradeDataMain}
           sevenTradeDataOvm={props.trades.sevenTradeDataOvm}
@@ -138,7 +167,7 @@ const Home = (props: any) => {
           inflationDataMain={props.stake.inflationDataMain}
           inflationDataOvm={props.stake.inflationDataOvm}
           inflationDataAll={props.stake.inflationDataAll}
-        />        
+        />
 
         <TradeFee
           click={netId}
@@ -174,30 +203,27 @@ const Home = (props: any) => {
           allNinetyFeeCollect={props.trades.allNinetyFeeCollect}
         />
 
-        <MoreStats/>
-        <StartStaking/>
-
+        <MoreStats />
+        <StartStaking />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
 
 export async function getStaticProps() {
-  const theTVL = await getTVL();
+  const theTVL = await getTVL()
   const stake = await staker()
   const numberStake = await numStaker()
   const trades = await tradeData()
-
-
 
   return {
     props: {
       theTVL,
       stake,
       numberStake,
-      trades
+      trades,
     },
-  };
+  }
 }
