@@ -2,7 +2,7 @@ import NetworkNavBar from '../components/network/NetworkNavBar'
 import Subheader from '../components/subheader/Subheader'
 import { useEffect, useState } from 'react'
 import { getTVL } from '../lib/getTVL'
-import { fetchDune } from '../lib/getDune'
+import { fetchDune, fetchSNXInflation, fetchStakersDune } from '../lib/getDune'
 import styles from '../styles/Main.module.css'
 import SnxStaked from '../components/data/snxStaked/SnxStaked'
 import TotalValueLocked from '../components/data/tvl/TotalValueLocked'
@@ -20,6 +20,8 @@ import StartStaking from '../components/data/startStaking/StartStaking'
 const Home = (props: any) => {
   const [netId, setNetId] = useState<number>(20)
   const [newData, setNewData] = useState<any>({})
+  const [stakers, setStakers] = useState({})
+  const [infaltion, setInflation] = useState({})
 
   const handleNetwork = (buttons: any) => {
     setNetId(buttons.id)
@@ -28,9 +30,11 @@ const Home = (props: any) => {
   useEffect(() => {
     (async () => {
       const result = await fetchDune()
+      const stakersRes = await fetchStakersDune()
+      const inflationsRes = await fetchSNXInflation()
       setNewData(result.latestResult)
-      console.log(result.latestResult);
-      
+      setStakers(stakersRes.latestResult)
+      setInflation(inflationsRes.latestResult)
     })()
 
     return
@@ -103,9 +107,17 @@ const Home = (props: any) => {
         />
         <NumStaker
           click={netId}
-          currentStakerOvm={props.numberStake.currentStakerOvm}
-          currentStakerAll={props.numberStake.currentStakerAll}
-          currentStakerMain={props.numberStake.currentStakerMain}
+          currentStakerAll={
+            stakers.cumulative_evt ||
+            props.numberStake.currentStakerAll
+          }
+          currentStakerMain={
+            stakers.cumulative_L1_evt ||
+            props.numberStake.currentStakerMain
+          }
+          currentStakerOvm={
+            stakers.cumulative_L2_evt ||
+            props.numberStake.currentStakerOvm}
           dayAll={props.numberStake.dayAll}
           dayMain={props.numberStake.dayMain}
           dayOvm={props.numberStake.dayOvm}
