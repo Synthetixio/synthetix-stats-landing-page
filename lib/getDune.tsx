@@ -1,0 +1,210 @@
+import { useState, useEffect } from 'react'
+
+const query = async (url: string, method = 'GET', body = null) => {
+  const meta = {
+    'x-dune-api-key': '',
+  }
+  const header = new Headers(meta)
+
+  let result = null
+
+  try {
+    const response = await fetch(url, { method, headers: header, body })
+    result = await response.json()
+  } catch (error) {
+    console.log(error)
+  }
+
+  return result
+}
+
+export const fetchExecutionResult = async (id: string, queryId: string) => {
+  const localResult = JSON.parse(localStorage.getItem(queryId) || '{}')
+  const { execution_state } = localResult
+  if (execution_state !== 'QUERY_STATE_COMPLETED') {
+    const timer = setInterval(() => {}, 1000)
+  } else {
+    const res = await query(
+      `https://api.dune.com/api/v1/execution/${id}/results`
+    )
+
+    const latestResult = res.result.rows[0]
+    const resultRows = res.result.rows
+
+    return {
+      latestResult,
+      resultRows,
+    }
+  }
+  // get status from localStorage
+  // if status is COMPLETE then query the result
+  // else return the a promise function
+  //      resolve value until status is COMPLETE
+  //
+}
+
+export const fetchExecutionId = async (queryId: string): Promise<string> => {
+  const queryIdData = localStorage.getItem(queryId)
+  let result = null
+
+  if (queryIdData) {
+    const jsonQueryIdData = JSON.parse(queryIdData)
+    const { executionTs, executionId } = jsonQueryIdData
+
+    if (Date.now() - executionTs <= 24 * 60 * 60 * 1000) {
+      result = executionId
+    } else {
+      console.log('[DBG] time is running out')
+      localStorage.removeItem(queryId)
+      return fetchExecutionId(queryId)
+    }
+  } else {
+    const executionIdRes = await query(
+      `https://api.dune.com/api/v1/query/${queryId}/execute`,
+      'POST'
+    )
+
+    const executionId = executionIdRes.execution_id
+    localStorage.setItem(
+      queryId,
+      JSON.stringify({
+        executionId: executionId,
+        executionTs: Date.now(),
+        executionState: executionIdRes.state,
+      })
+    )
+    result = executionId
+  }
+
+  return result
+}
+
+export const fetchDune = async () => {
+  // 1895265 Synthetix Unique Stakers
+  // 1898719 SNX Staking Ration
+
+  // const executionIdRes = await query(
+  //   'https://api.dune.com/api/v1/query/1895265/execute',
+  //   'POST'
+  // )
+
+  //   const executionId = executionIdRes.execution_id
+  //   console.log(executionId);
+
+  // TODO: write an interval that may not get execution_id every time
+
+  const res = await query(
+    `https://api.dune.com/api/v1/execution/01GTDGTF60QBKRHPC0EZQCJM45/results`
+  )
+
+  const latestResult = res.result.rows[0]
+  const resultRows = res.result.rows
+
+  return {
+    latestResult,
+    resultRows,
+  }
+}
+
+export const fetchStakersDune = async () => {
+  const res = await query(
+    `https://api.dune.com/api/v1/execution/01GTDGTF60QBKRHPC0EZQCJM45/results`
+  )
+
+  const latestResult = res.result.rows[0]
+  const resultRows = res.result.rows
+
+  return {
+    latestResult,
+    resultRows,
+  }
+}
+
+export const fetchFees = async () => {
+  const queryId = '1893390'
+  const execution_id = await fetchExecutionId(queryId)
+  const resutl = await fetchExecutionResult(execution_id, queryId)
+  console.log('Fee', execution_id)
+}
+
+export const fetchSNXInflation = async () => {
+  //   const executionIdRes = await query(
+  //     'https://api.dune.com/api/v1/query/1906342/execute',
+  //     'POST'
+  //   )
+
+  const res = await query(
+    `https://api.dune.com/api/v1/execution/01GTJJ93HHQM93B6V7GNV4NB9V/results`
+  )
+
+  const latestResult = res.result.rows[0]
+  const resultRows = res.result.rows
+
+  return {
+    latestResult,
+    resultRows,
+  }
+}
+
+const getStatus = async (queryId: string, executionId: string) => {
+  const localResult = localStorage.getItem(queryId) || '{}'
+  const { executionState } = JSON.parse(localResult)
+  const state = executionState
+  if (state === 'QUERY_STATE_COMPLETED') {
+    return state
+  } else {
+    const result = await query(
+      `https://api.dune.com/api/v1/execution/${executionId}/status`
+    )
+    const { state } = result
+    localStorage.setItem(
+      queryId,
+      JSON.stringify({
+        ...JSON.parse(localResult),
+        executionState: state,
+      })
+    )
+    return state
+  }
+}
+
+export function useDuneFetch(queryId: string) {
+  const [resultRows, setResultRows] = useState(null)
+  const [latestResult, setLatestResult] = useState(null)
+
+  useEffect(() => {
+    fetchExecutionId(queryId)
+      .then((executionId) => {
+        const id = setInterval(() => {
+          fetchStatus(executionId, id)
+        }, 1000)
+      })
+      .catch((err) => console.log(err))
+  }, [])
+
+  const fetchStatus = async (executionId: string, id) => {
+    const state = await getStatus(queryId, executionId)
+    console.log('fetchStatus', state)
+
+    if (state === 'QUERY_STATE_COMPLETED') {
+      clearInterval(id)
+      fetchExecutionResult(executionId)
+    }
+  }
+
+  const fetchExecutionResult = async (executionId: string) => {
+    const res = await query(
+      `https://api.dune.com/api/v1/execution/${executionId}/results`
+    )
+
+    const latestResult = res.result.rows[0]
+    const resultRows = res.result.rows
+    setResultRows(resultRows)
+    setLatestResult(latestResult)
+  }
+
+  return {
+    latestResult,
+    resultRows
+  }
+}
