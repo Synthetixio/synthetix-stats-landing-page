@@ -205,6 +205,68 @@ export function useDuneFetch(queryId: string) {
 
   return {
     latestResult,
-    resultRows
+    resultRows,
+  }
+}
+
+const convertDate = (date) =>
+  (new Date(date)).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' })
+
+// handle SNX divide by weekly or daily
+export function divide(rows) {
+  if (!rows || rows.length === 0) {
+    return {}
+  }
+  // date stakers
+  // sort by day
+  const sorted = rows.sort(function (a, b) {
+    return new Date(b.day) - new Date(a.day)
+  })
+  // dailyOVM
+  const dailyOVM = sorted
+    .slice(0, 7)
+    .reduce((res, val, idx) => {
+      const { day, cumulative_L1_evt, cumulative_L2_evt, cumulative_evt } = val
+      res.push({
+        date: convertDate(day),
+        stakers: cumulative_evt,
+      })
+
+      return res
+    }, [])
+    .reverse()
+  // weekly OVM
+  const weeklyOVM = sorted
+    .reduce((res, val, idx) => {
+      if ((idx + 1) % 7 === 0) {
+        const { day, cumulative_L1_evt, cumulative_L2_evt, cumulative_evt } =
+          val
+        res.push({
+          date: convertDate(day),
+          stakers: cumulative_evt,
+        })
+      }
+      return res
+    }, [])
+    .slice(0, 7).reverse()
+  //   monthly OVM
+  const monthlyOVM = sorted
+    .reduce((res, val, idx) => {
+      if ((idx + 1) % 30 === 0) {
+        const { day, cumulative_L1_evt, cumulative_L2_evt, cumulative_evt } =
+          val
+        res.push({
+          date: convertDate(day),
+          stakers: cumulative_evt,
+        })
+      }
+      return res
+    }, [])
+    .slice(0, 7).reverse()
+
+  return {
+    dailyOVM,
+    weeklyOVM,
+    monthlyOVM,
   }
 }
