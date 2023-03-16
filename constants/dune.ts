@@ -2,5 +2,6 @@ const DUNE = {
     SNX_STAKING: '1898719',
     SNX_INFLATION: '1906342',
     SNX_USERS: '1895265',
+    SNX_FEES: '1893390',
 }
 export default DUNE

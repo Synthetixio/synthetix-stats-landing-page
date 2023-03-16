@@ -270,3 +270,38 @@ export function divide(rows) {
     monthlyOVM,
   }
 }
+
+export function divideInflation(rows) {
+  if (!rows || rows.length === 0) {
+    return {}
+  }
+  const sortedRows = rows.sort(function (a, b) {
+    return new Date(b.day) - new Date(a.day)
+  })
+
+  const inflationDataAll = []
+  const inflationDataMain = []
+  const inflationDataOvm = []
+  sortedRows.slice(0, 7).forEach((row) => {
+    const { week, SNX_totalSupply, L1_totalSupply, L2_totalSupply } = row
+    const date = convertDate(week)
+    inflationDataAll.push({
+      date,
+      snx_rewards: SNX_totalSupply,
+    })
+    inflationDataMain.push({
+      date,
+      snx_rewards: L1_totalSupply,
+    })
+    inflationDataOvm.push({
+      date,
+      snx_rewards: L2_totalSupply,
+    })
+  })
+
+  return {
+    inflationDataAll: inflationDataAll.reverse(),
+    inflationDataMain: inflationDataMain.reverse(),
+    inflationDataOvm: inflationDataOvm.reverse(),
+  }
+}
