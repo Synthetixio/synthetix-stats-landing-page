@@ -209,9 +209,16 @@ export function useDuneFetch(queryId: string) {
   }
 }
 
-const convertDate = (date) =>
-  (new Date(date)).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' })
+const convertDate = (date: string) =>
+  new Date(date).toLocaleDateString('en-US', {
+    month: '2-digit',
+    day: '2-digit',
+  })
 
+interface StakerRow {
+  date: string
+  stakers: number
+}
 // handle SNX divide by weekly or daily
 export function divide(rows) {
   if (!rows || rows.length === 0) {
@@ -222,53 +229,96 @@ export function divide(rows) {
   const sorted = rows.sort(function (a, b) {
     return new Date(b.day) - new Date(a.day)
   })
+
   // dailyOVM
-  const dailyOVM = sorted
-    .slice(0, 7)
-    .reduce((res, val, idx) => {
-      const { day, cumulative_L1_evt, cumulative_L2_evt, cumulative_evt } = val
-      res.push({
-        date: convertDate(day),
+  const dayAll: StakerRow[] = []
+  const dayMain: StakerRow[] = []
+  const dayOvm: StakerRow[] = []
+
+  const weekAll: StakerRow[] = []
+  const weekMain: StakerRow[] = []
+  const weekOvm: StakerRow[] = []
+
+  const monthAll: StakerRow[] = []
+  const monthMain: StakerRow[] = []
+  const monthOvm: StakerRow[] = []
+
+  console.log(sorted)
+
+  sorted.slice(0, 7).forEach((row) => {
+    const { day, cumulative_evt, cumulative_L1_evt, cumulative_L2_evt } = row
+    const date = convertDate(day)
+    dayAll.unshift({
+      date,
+      stakers: cumulative_evt,
+    })
+    dayMain.unshift({
+      date,
+      stakers: cumulative_L1_evt,
+    })
+    dayOvm.unshift({
+      date,
+      stakers: cumulative_L2_evt,
+    })
+  })
+
+  sorted.slice(0, 7 * 8).forEach((row, idx) => {
+    if (idx % 7 === 0) {
+      const { day, cumulative_L1_evt, cumulative_L2_evt, cumulative_evt } = row
+      const date = convertDate(day)
+      weekAll.unshift({
+        date,
         stakers: cumulative_evt,
       })
+      weekMain.unshift({
+        date,
+        stakers: cumulative_L1_evt,
+      })
+      weekOvm.unshift({
+        date,
+        stakers: cumulative_L2_evt,
+      })
+    }
+  })
 
-      return res
-    }, [])
-    .reverse()
-  // weekly OVM
-  const weeklyOVM = sorted
-    .reduce((res, val, idx) => {
-      if ((idx + 1) % 7 === 0) {
-        const { day, cumulative_L1_evt, cumulative_L2_evt, cumulative_evt } =
-          val
-        res.push({
-          date: convertDate(day),
-          stakers: cumulative_evt,
-        })
-      }
-      return res
-    }, [])
-    .slice(0, 7).reverse()
   //   monthly OVM
-  const monthlyOVM = sorted
-    .reduce((res, val, idx) => {
-      if ((idx + 1) % 30 === 0) {
-        const { day, cumulative_L1_evt, cumulative_L2_evt, cumulative_evt } =
-          val
-        res.push({
-          date: convertDate(day),
-          stakers: cumulative_evt,
-        })
-      }
-      return res
-    }, [])
-    .slice(0, 7).reverse()
+  sorted.slice(0, 30 * 8).forEach((row, idx: number) => {
+    if (idx % 30 === 0) {
+      const { day, cumulative_L1_evt, cumulative_L2_evt, cumulative_evt } = row
+      const date = convertDate(day)
+      monthAll.unshift({
+        date,
+        stakers: cumulative_evt,
+      })
+      monthMain.unshift({
+        date,
+        stakers: cumulative_L1_evt,
+      })
+      monthOvm.unshift({
+        date,
+        stakers: cumulative_L2_evt,
+      })
+    }
+  })
 
   return {
-    dailyOVM,
-    weeklyOVM,
-    monthlyOVM,
+    dayAll,
+    dayMain,
+    dayOvm,
+
+    weekAll,
+    weekMain,
+    weekOvm,
+
+    monthAll,
+    monthMain,
+    monthOvm,
   }
+}
+
+interface Row {
+  date: string
+  snx_rewards: number
 }
 
 export function divideInflation(rows) {
@@ -279,9 +329,9 @@ export function divideInflation(rows) {
     return new Date(b.day) - new Date(a.day)
   })
 
-  const inflationDataAll = []
-  const inflationDataMain = []
-  const inflationDataOvm = []
+  const inflationDataAll: Row[] = []
+  const inflationDataMain: Row[] = []
+  const inflationDataOvm: Row[] = []
   sortedRows.slice(0, 7).forEach((row) => {
     const { week, SNX_totalSupply, L1_totalSupply, L2_totalSupply } = row
     const date = convertDate(week)

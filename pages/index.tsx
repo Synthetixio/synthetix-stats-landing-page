@@ -36,7 +36,6 @@ const Home = (props: any) => {
     useDuneFetch(DUNE.SNX_INFLATION)
   const duneStakersRow = divide(snxUsers)
   const duneInflationRows = divideInflation(inflationRows)
-  console.log(duneInflationRows)
 
   useEffect(() => {
     setStakers(snxUser || {})
@@ -112,15 +111,15 @@ const Home = (props: any) => {
           currentStakerOvm={
             stakers.cumulative_L2_evt || props.numberStake.currentStakerOvm
           }
-          dayAll={duneStakersRow.dailyOVM || props.numberStake.dayAll}
-          dayMain={props.numberStake.dayMain}
-          dayOvm={props.numberStake.dayOvm}
-          weekAll={duneStakersRow.weeklyOVM || props.numberStake.weekAll}
-          weekMain={props.numberStake.weekMain}
-          weekOvm={props.numberStake.weekOvm}
-          monthAll={duneStakersRow.monthlyOVM || props.numberStake.monthAll}
-          monthMain={props.numberStake.monthMain}
-          monthOvm={props.numberStake.monthOvm}
+          dayAll={duneStakersRow.dayAll || props.numberStake.dayAll}
+          dayMain={duneStakersRow.dayMain || props.numberStake.dayMain}
+          dayOvm={duneStakersRow.dayOvm || props.numberStake.dayOvm}
+          weekAll={duneStakersRow.weekAll || props.numberStake.weekAll}
+          weekMain={duneStakersRow.weekMain || props.numberStake.weekMain}
+          weekOvm={duneStakersRow.weekOvm || props.numberStake.weekOvm}
+          monthAll={duneStakersRow.monthAll || props.numberStake.monthAll}
+          monthMain={duneStakersRow.monthMain || props.numberStake.monthMain}
+          monthOvm={duneStakersRow.monthOvm || props.numberStake.monthOvm}
         />
 
         {/* <TradeActivity
