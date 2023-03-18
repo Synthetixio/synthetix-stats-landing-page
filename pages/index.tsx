@@ -53,7 +53,7 @@ const Home = (props: any) => {
           stakeValueOvm={staking.TVL_L2_Staked}
         />
 
-        {/* <TotalValueLocked
+        <TotalValueLocked
           dayDataOvm={props.theTVL.dayOvm}
           weekDataOvm={props.theTVL.weekOvm}
           monthDataOvm={props.theTVL.monthOvm}
@@ -70,13 +70,13 @@ const Home = (props: any) => {
           totalLoanMain={props.theTVL.mainCurrentLoan}
           totalLoanOvm={props.theTVL.ovmCurrentLoan}
           click={netId}
-        /> */}
-        {/* <StakeAPY
+        />
+        <StakeAPY
           click={netId}
           avg={props.stake.apyAvg}
           ovm={props.stake.apyOvm}
           main={props.stake.apyMain}
-        /> */}
+        />
         <NumStaker
           click={netId}
           currentStakerAll={duneSNXStaker.cumulative_evt}
@@ -93,7 +93,7 @@ const Home = (props: any) => {
           monthOvm={duneSNXStakerRows.monthOvm}
         />
 
-        {/* <TradeActivity
+        <TradeActivity
           click={netId}
           tradeDataMain={props.trades.tradeDataMain}
           tradeDataOvm={props.trades.tradeDataOvm}
@@ -130,7 +130,7 @@ const Home = (props: any) => {
           thirtyTradeMain={props.trades.thirtyTotalTradeMain}
           ninetyTradeOvm={props.trades.ninetyTotalTradeOvm}
           ninetyTradeMain={props.trades.ninetyTotalTradeMain}
-        /> */}
+        />
 
         <Inflation
           click={netId}
@@ -151,7 +151,7 @@ const Home = (props: any) => {
           inflationDataAll={duneInflationRows.inflationDataAll}
         />
 
-        {/* <TradeFee
+        <TradeFee
           click={netId}
           totalFeeAll={props.trades.allTotalFee}
           totalFeeMain={props.trades.totalFeeMain}
@@ -183,7 +183,7 @@ const Home = (props: any) => {
           ninetyFeeCollectMain={props.trades.ninetyFeeCollectMain}
           ninetyFeeCollectOvm={props.trades.ninetyFeeCollectOvm}
           allNinetyFeeCollect={props.trades.allNinetyFeeCollect}
-        /> */}
+        />
 
         <MoreStats />
         <StartStaking />
@@ -205,16 +205,17 @@ export async function getStaticProps() {
   )()
 
   const stake = await staker()
-  // const trades = await tradeData()
+  const trades = await tradeData()
+  const theTVL = await getTVL()
 
   return {
     props: {
       duneSNXUsers,
       duneSNXStaking,
       duneSNXInflation,
-      // theTVL,
+      theTVL,
       stake,
-      // trades,
+      trades,
     },
   }
 }

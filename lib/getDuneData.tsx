@@ -1,8 +1,3 @@
-// import NodeCache from 'node-cache'
-
-// // Fetch data from an external API and save it to the cache
-// const cache = new NodeCache({ stdTTL: 86400 })
-
 const query = async (
   url: string,
   method = 'GET',
