@@ -76,7 +76,7 @@ const Home = (props: any) => {
           stakeValueOvm={staking.TVL_L2_Staked || props.stake.stakeValueOvm}
         />
 
-        {/* <TotalValueLocked
+        <TotalValueLocked
           dayDataOvm={props.theTVL.dayOvm}
           weekDataOvm={props.theTVL.weekOvm}
           monthDataOvm={props.theTVL.monthOvm}
@@ -93,13 +93,13 @@ const Home = (props: any) => {
           totalLoanMain={props.theTVL.mainCurrentLoan}
           totalLoanOvm={props.theTVL.ovmCurrentLoan}
           click={netId}
-        /> */}
-        {/* <StakeAPY
+        />
+        <StakeAPY
           click={netId}
           avg={props.stake.apyAvg}
           ovm={props.stake.apyOvm}
           main={props.stake.apyMain}
-        /> */}
+        />
         <NumStaker
           click={netId}
           currentStakerAll={
@@ -122,7 +122,7 @@ const Home = (props: any) => {
           monthOvm={duneStakersRow.monthOvm || props.numberStake.monthOvm}
         />
 
-        {/* <TradeActivity
+        <TradeActivity
           click={netId}
           tradeDataMain={props.trades.tradeDataMain}
           tradeDataOvm={props.trades.tradeDataOvm}
@@ -159,7 +159,7 @@ const Home = (props: any) => {
           thirtyTradeMain={props.trades.thirtyTotalTradeMain}
           ninetyTradeOvm={props.trades.ninetyTotalTradeOvm}
           ninetyTradeMain={props.trades.ninetyTotalTradeMain}
-        /> */}
+        />
 
         <Inflation
           click={netId}
@@ -190,7 +190,7 @@ const Home = (props: any) => {
           }
         />
 
-        {/* <TradeFee
+        <TradeFee
           click={netId}
           totalFeeAll={props.trades.allTotalFee}
           totalFeeMain={props.trades.totalFeeMain}
@@ -222,7 +222,7 @@ const Home = (props: any) => {
           ninetyFeeCollectMain={props.trades.ninetyFeeCollectMain}
           ninetyFeeCollectOvm={props.trades.ninetyFeeCollectOvm}
           allNinetyFeeCollect={props.trades.allNinetyFeeCollect}
-        /> */}
+        />
 
         <MoreStats />
         <StartStaking />
@@ -234,17 +234,18 @@ const Home = (props: any) => {
 export default Home
 
 export async function getStaticProps() {
-  // const theTVL = await getTVL()
+  
+  const theTVL = await getTVL()
   const stake = await staker()
   const numberStake = await numStaker()
-  // const trades = await tradeData()
+  const trades = await tradeData()
 
   return {
     props: {
-      // theTVL,
+      theTVL,
       stake,
       numberStake,
-      // trades,
+      trades,
     },
   }
 }

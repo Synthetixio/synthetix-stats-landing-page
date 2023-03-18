@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 const query = async (url: string, method = 'GET', body = null) => {
   const meta = {
-    'x-dune-api-key': '',
+    'x-dune-api-key': process.env.DUNE_API_KEY as string,
   }
   const header = new Headers(meta)
 
@@ -16,31 +16,6 @@ const query = async (url: string, method = 'GET', body = null) => {
   }
 
   return result
-}
-
-export const fetchExecutionResult = async (id: string, queryId: string) => {
-  const localResult = JSON.parse(localStorage.getItem(queryId) || '{}')
-  const { execution_state } = localResult
-  if (execution_state !== 'QUERY_STATE_COMPLETED') {
-    const timer = setInterval(() => {}, 1000)
-  } else {
-    const res = await query(
-      `https://api.dune.com/api/v1/execution/${id}/results`
-    )
-
-    const latestResult = res.result.rows[0]
-    const resultRows = res.result.rows
-
-    return {
-      latestResult,
-      resultRows,
-    }
-  }
-  // get status from localStorage
-  // if status is COMPLETE then query the result
-  // else return the a promise function
-  //      resolve value until status is COMPLETE
-  //
 }
 
 export const fetchExecutionId = async (queryId: string): Promise<string> => {
@@ -79,73 +54,6 @@ export const fetchExecutionId = async (queryId: string): Promise<string> => {
   return result
 }
 
-export const fetchDune = async () => {
-  // 1895265 Synthetix Unique Stakers
-  // 1898719 SNX Staking Ration
-
-  // const executionIdRes = await query(
-  //   'https://api.dune.com/api/v1/query/1895265/execute',
-  //   'POST'
-  // )
-
-  //   const executionId = executionIdRes.execution_id
-  //   console.log(executionId);
-
-  // TODO: write an interval that may not get execution_id every time
-
-  const res = await query(
-    `https://api.dune.com/api/v1/execution/01GTDGTF60QBKRHPC0EZQCJM45/results`
-  )
-
-  const latestResult = res.result.rows[0]
-  const resultRows = res.result.rows
-
-  return {
-    latestResult,
-    resultRows,
-  }
-}
-
-export const fetchStakersDune = async () => {
-  const res = await query(
-    `https://api.dune.com/api/v1/execution/01GTDGTF60QBKRHPC0EZQCJM45/results`
-  )
-
-  const latestResult = res.result.rows[0]
-  const resultRows = res.result.rows
-
-  return {
-    latestResult,
-    resultRows,
-  }
-}
-
-export const fetchFees = async () => {
-  const queryId = '1893390'
-  const execution_id = await fetchExecutionId(queryId)
-  const resutl = await fetchExecutionResult(execution_id, queryId)
-  console.log('Fee', execution_id)
-}
-
-export const fetchSNXInflation = async () => {
-  //   const executionIdRes = await query(
-  //     'https://api.dune.com/api/v1/query/1906342/execute',
-  //     'POST'
-  //   )
-
-  const res = await query(
-    `https://api.dune.com/api/v1/execution/01GTJJ93HHQM93B6V7GNV4NB9V/results`
-  )
-
-  const latestResult = res.result.rows[0]
-  const resultRows = res.result.rows
-
-  return {
-    latestResult,
-    resultRows,
-  }
-}
-
 const getStatus = async (queryId: string, executionId: string) => {
   const localResult = localStorage.getItem(queryId) || '{}'
   const { executionState } = JSON.parse(localResult)
@@ -171,20 +79,25 @@ const getStatus = async (queryId: string, executionId: string) => {
 export function useDuneFetch(queryId: string) {
   const [resultRows, setResultRows] = useState(null)
   const [latestResult, setLatestResult] = useState(null)
+  const [counter, setCounter] = useState(0)
 
   useEffect(() => {
     fetchExecutionId(queryId)
       .then((executionId) => {
         const id = setInterval(() => {
           fetchStatus(executionId, id)
-        }, 1000)
+        }, 10000)
       })
       .catch((err) => console.log(err))
   }, [])
 
   const fetchStatus = async (executionId: string, id) => {
     const state = await getStatus(queryId, executionId)
-    console.log('fetchStatus', state)
+    setCounter(counter + 1)
+    if (counter >= 3) {
+      clearInterval(id)
+      console.log('[ERROR] status')
+    }
 
     if (state === 'QUERY_STATE_COMPLETED') {
       clearInterval(id)
@@ -242,8 +155,6 @@ export function divide(rows) {
   const monthAll: StakerRow[] = []
   const monthMain: StakerRow[] = []
   const monthOvm: StakerRow[] = []
-
-  console.log(sorted)
 
   sorted.slice(0, 7).forEach((row) => {
     const { day, cumulative_evt, cumulative_L1_evt, cumulative_L2_evt } = row
