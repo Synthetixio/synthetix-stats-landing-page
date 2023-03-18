@@ -1,6 +1,8 @@
+import NodeCache from 'node-cache'
+
 import NetworkNavBar from '../components/network/NetworkNavBar'
 import Subheader from '../components/subheader/Subheader'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { getTVL } from '../lib/getTVL'
 import { useDuneFetch, divide, divideInflation } from '../lib/getDune'
 import styles from '../styles/Main.module.css'
@@ -17,31 +19,20 @@ import { tradeData } from '../lib/getTradeData'
 import MoreStats from '../components/data/moreStats/MoreStats'
 import StartStaking from '../components/data/startStaking/StartStaking'
 import DUNE from '../constants/dune'
+import { createFetchWithRetry } from '../lib/getDuneData'
 
 const Home = (props: any) => {
   const [netId, setNetId] = useState<number>(20)
-  const [staking, setDuneStaking] = useState<any>({})
-  const [stakers, setStakers] = useState({})
-  const [infaltion, setInflation] = useState({})
 
   const handleNetwork = (buttons: any) => {
     setNetId(buttons.id)
   }
 
-  const { latestResult: snxUser, resultRows: snxUsers } = useDuneFetch(
-    DUNE.SNX_USERS
-  )
-  const { latestResult: duneStaking } = useDuneFetch(DUNE.SNX_STAKING)
-  const { latestResult: duneInflation, resultRows: inflationRows } =
-    useDuneFetch(DUNE.SNX_INFLATION)
-  const duneStakersRow = divide(snxUsers)
-  const duneInflationRows = divideInflation(inflationRows)
-
-  useEffect(() => {
-    setStakers(snxUser || {})
-    setDuneStaking(duneStaking || {})
-    setInflation(duneInflation || {})
-  }, [snxUser, duneStaking, duneInflation])
+  const duneSNXStakerRows = divide(props.duneSNXUsers.resultRows)
+  const duneInflationRows = divideInflation(props.duneSNXInflation.resultRows)
+  const duneSNXStaker = props.duneSNXUsers.latestResult
+  const staking = props.duneSNXStaking.latestResult
+  const inflation = props.duneSNXInflation.latestResult
 
   return (
     <div>
@@ -51,32 +42,18 @@ const Home = (props: any) => {
       <div className={styles.container}>
         <SnxStaked
           click={netId}
-          percentStakeAll={
-            staking.Total_stake_ratio / 100 || props.stake.percentStakedAll
-          }
-          percentStakeMain={
-            staking.L1_stake_ratio / 100 || props.stake.percentStakedMain
-          }
-          percentStakeOvm={
-            staking.L2_stake_ratio / 100 || props.stake.percentStakedOvm
-          }
-          stakeAmountAll={
-            staking.TVL_staked / staking.SNX_price || props.stake.totalStakeAll
-          }
-          stakeAmountMain={
-            staking.TVL_L1_staked / staking.SNX_price ||
-            props.stake.totalStakeMain
-          }
-          stakeAmountOvm={
-            staking.TVL_L2_staked / staking.SNX_price ||
-            props.stake.totalStakeOvm
-          }
-          stakeValueAll={staking.TVL_staked || props.stake.stakeValueAll}
-          stakeValueMain={staking.TVL_L1_Staked || props.stake.stakeValueMain}
-          stakeValueOvm={staking.TVL_L2_Staked || props.stake.stakeValueOvm}
+          percentStakeAll={staking.Total_stake_ratio / 100}
+          percentStakeMain={staking.L1_stake_ratio / 100}
+          percentStakeOvm={staking.L2_stake_ratio / 100}
+          stakeAmountAll={staking.TVL_staked / staking.SNX_price}
+          stakeAmountMain={staking.TVL_L1_Staked / staking.SNX_price}
+          stakeAmountOvm={staking.TVL_L2_Staked / staking.SNX_price}
+          stakeValueAll={staking.TVL_staked}
+          stakeValueMain={staking.TVL_L1_Staked}
+          stakeValueOvm={staking.TVL_L2_Staked}
         />
 
-        <TotalValueLocked
+        {/* <TotalValueLocked
           dayDataOvm={props.theTVL.dayOvm}
           weekDataOvm={props.theTVL.weekOvm}
           monthDataOvm={props.theTVL.monthOvm}
@@ -93,36 +70,30 @@ const Home = (props: any) => {
           totalLoanMain={props.theTVL.mainCurrentLoan}
           totalLoanOvm={props.theTVL.ovmCurrentLoan}
           click={netId}
-        />
-        <StakeAPY
+        /> */}
+        {/* <StakeAPY
           click={netId}
           avg={props.stake.apyAvg}
           ovm={props.stake.apyOvm}
           main={props.stake.apyMain}
-        />
+        /> */}
         <NumStaker
           click={netId}
-          currentStakerAll={
-            stakers.cumulative_evt || props.numberStake.currentStakerAll
-          }
-          currentStakerMain={
-            stakers.cumulative_L1_evt || props.numberStake.currentStakerMain
-          }
-          currentStakerOvm={
-            stakers.cumulative_L2_evt || props.numberStake.currentStakerOvm
-          }
-          dayAll={duneStakersRow.dayAll || props.numberStake.dayAll}
-          dayMain={duneStakersRow.dayMain || props.numberStake.dayMain}
-          dayOvm={duneStakersRow.dayOvm || props.numberStake.dayOvm}
-          weekAll={duneStakersRow.weekAll || props.numberStake.weekAll}
-          weekMain={duneStakersRow.weekMain || props.numberStake.weekMain}
-          weekOvm={duneStakersRow.weekOvm || props.numberStake.weekOvm}
-          monthAll={duneStakersRow.monthAll || props.numberStake.monthAll}
-          monthMain={duneStakersRow.monthMain || props.numberStake.monthMain}
-          monthOvm={duneStakersRow.monthOvm || props.numberStake.monthOvm}
+          currentStakerAll={duneSNXStaker.cumulative_evt}
+          currentStakerMain={duneSNXStaker.cumulative_L1_evt}
+          currentStakerOvm={duneSNXStaker.cumulative_L2_evt}
+          dayAll={duneSNXStakerRows.dayAll}
+          dayMain={duneSNXStakerRows.dayMain}
+          dayOvm={duneSNXStakerRows.dayOvm}
+          weekAll={duneSNXStakerRows.weekAll}
+          weekMain={duneSNXStakerRows.weekMain}
+          weekOvm={duneSNXStakerRows.weekOvm}
+          monthAll={duneSNXStakerRows.monthAll}
+          monthMain={duneSNXStakerRows.monthMain}
+          monthOvm={duneSNXStakerRows.monthOvm}
         />
 
-        <TradeActivity
+        {/* <TradeActivity
           click={netId}
           tradeDataMain={props.trades.tradeDataMain}
           tradeDataOvm={props.trades.tradeDataOvm}
@@ -159,38 +130,28 @@ const Home = (props: any) => {
           thirtyTradeMain={props.trades.thirtyTotalTradeMain}
           ninetyTradeOvm={props.trades.ninetyTotalTradeOvm}
           ninetyTradeMain={props.trades.ninetyTotalTradeMain}
-        />
+        /> */}
 
         <Inflation
           click={netId}
-          // TODO: if it is zero needs to consider
           currentRewardMain={
-            infaltion.L1_totalSupply - infaltion.L1_totalSupply_t0 ||
-            props.stake.rewardMain
+            inflation.L1_totalSupply - inflation.L1_totalSupply_t0
           }
           currentRewardOvm={
-            infaltion.L2_totalSupply - infaltion.L2_totalSupply_t0 ||
-            props.stake.rewardOvm
+            inflation.L2_totalSupply - inflation.L2_totalSupply_t0
           }
           currentRewardAll={
-            infaltion.SNX_totalSupply - infaltion.SNX_totalSupply_t0 ||
-            props.stake.rewardAll
+            inflation.SNX_totalSupply - inflation.SNX_totalSupply_t0
           }
           allTimeInflationMain={props.stake.rewardsAmountMain}
           allTimeInflationOvm={props.stake.rewardsAmountOvm}
           allTimeInflationAll={props.stake.rewardsAmountAll}
-          inflationDataMain={
-            duneInflationRows.inflationDataMain || props.stake.inflationDataMain
-          }
-          inflationDataOvm={
-            duneInflationRows.inflationDataOvm || props.stake.inflationDataOvm
-          }
-          inflationDataAll={
-            duneInflationRows.inflationDataAll || props.stake.inflationDataAll
-          }
+          inflationDataMain={duneInflationRows.inflationDataMain}
+          inflationDataOvm={duneInflationRows.inflationDataOvm}
+          inflationDataAll={duneInflationRows.inflationDataAll}
         />
 
-        <TradeFee
+        {/* <TradeFee
           click={netId}
           totalFeeAll={props.trades.allTotalFee}
           totalFeeMain={props.trades.totalFeeMain}
@@ -222,7 +183,7 @@ const Home = (props: any) => {
           ninetyFeeCollectMain={props.trades.ninetyFeeCollectMain}
           ninetyFeeCollectOvm={props.trades.ninetyFeeCollectOvm}
           allNinetyFeeCollect={props.trades.allNinetyFeeCollect}
-        />
+        /> */}
 
         <MoreStats />
         <StartStaking />
@@ -233,19 +194,27 @@ const Home = (props: any) => {
 
 export default Home
 
+const cache = new NodeCache({ stdTTL: 86400 })
+
 export async function getStaticProps() {
-  
-  const theTVL = await getTVL()
+  const duneSNXUsers = await createFetchWithRetry(DUNE.SNX_USERS, cache)()
+  const duneSNXStaking = await createFetchWithRetry(DUNE.SNX_STAKING, cache)()
+  const duneSNXInflation = await createFetchWithRetry(
+    DUNE.SNX_INFLATION,
+    cache
+  )()
+
   const stake = await staker()
-  const numberStake = await numStaker()
-  const trades = await tradeData()
+  // const trades = await tradeData()
 
   return {
     props: {
-      theTVL,
+      duneSNXUsers,
+      duneSNXStaking,
+      duneSNXInflation,
+      // theTVL,
       stake,
-      numberStake,
-      trades,
+      // trades,
     },
   }
 }

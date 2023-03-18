@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-const query = async (url: string, method = 'GET', body = null) => {
+const query = async (url: string, method = 'GET', body: string | null = null) => {
   const meta = {
     'x-dune-api-key': process.env.DUNE_API_KEY as string,
   }
@@ -18,7 +18,7 @@ const query = async (url: string, method = 'GET', body = null) => {
   return result
 }
 
-export const fetchExecutionId = async (queryId: string): Promise<string> => {
+export const fetchExecutionId = async (queryId: string, body: string): Promise<string> => {
   const queryIdData = localStorage.getItem(queryId)
   let result = null
 
@@ -31,12 +31,13 @@ export const fetchExecutionId = async (queryId: string): Promise<string> => {
     } else {
       console.log('[DBG] time is running out')
       localStorage.removeItem(queryId)
-      return fetchExecutionId(queryId)
+      return fetchExecutionId(queryId, body)
     }
   } else {
     const executionIdRes = await query(
       `https://api.dune.com/api/v1/query/${queryId}/execute`,
-      'POST'
+      'POST',
+      body,
     )
 
     const executionId = executionIdRes.execution_id
@@ -76,13 +77,13 @@ const getStatus = async (queryId: string, executionId: string) => {
   }
 }
 
-export function useDuneFetch(queryId: string) {
+export function useDuneFetch(queryId: string, body?: string) {
   const [resultRows, setResultRows] = useState(null)
   const [latestResult, setLatestResult] = useState(null)
   const [counter, setCounter] = useState(0)
 
   useEffect(() => {
-    fetchExecutionId(queryId)
+    fetchExecutionId(queryId, body)
       .then((executionId) => {
         const id = setInterval(() => {
           fetchStatus(executionId, id)
