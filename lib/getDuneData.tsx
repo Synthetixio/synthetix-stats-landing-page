@@ -1,3 +1,5 @@
+import NodeCache from "node-cache"
+
 const query = async (
   url: string,
   method = 'GET',
@@ -22,7 +24,7 @@ const query = async (
 
 export const fetchExecutionId = async (
   queryId: string,
-  body: string
+  body?: string
 ): Promise<string> => {
   const executionIdRes = await query(
     `https://api.dune.com/api/v1/query/${queryId}/execute`,
@@ -33,7 +35,7 @@ export const fetchExecutionId = async (
   return executionIdRes.execution_id
 }
 
-function createFetchWithRetry(queryId: string, cache, body?: string) {
+function createFetchWithRetry(queryId: string, cache: NodeCache, body?: string) {
   return async function () {
     const cachedResult = cache.get(queryId)
 

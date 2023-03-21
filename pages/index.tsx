@@ -4,7 +4,7 @@ import NetworkNavBar from '../components/network/NetworkNavBar'
 import Subheader from '../components/subheader/Subheader'
 import { useState } from 'react'
 import { getTVL } from '../lib/getTVL'
-import { useDuneFetch, divide, divideInflation } from '../lib/getDune'
+import { divide, divideInflation } from '../lib/getDune'
 import styles from '../styles/Main.module.css'
 import SnxStaked from '../components/data/snxStaked/SnxStaked'
 import TotalValueLocked from '../components/data/tvl/TotalValueLocked'
@@ -14,7 +14,6 @@ import TradeActivity from '../components/data/tradeActivity/TradeActivity'
 import Inflation from '../components/data/inflation/Inflation'
 import TradeFee from '../components/data/tradeFee/TradeFee'
 import { staker } from '../lib/getStaker'
-import { numStaker } from '../lib/getNumStaker'
 import { tradeData } from '../lib/getTradeData'
 import MoreStats from '../components/data/moreStats/MoreStats'
 import StartStaking from '../components/data/startStaking/StartStaking'
@@ -82,15 +81,15 @@ const Home = (props: any) => {
           currentStakerAll={duneSNXStaker.cumulative_evt}
           currentStakerMain={duneSNXStaker.cumulative_L1_evt}
           currentStakerOvm={duneSNXStaker.cumulative_L2_evt}
-          dayAll={duneSNXStakerRows.dayAll}
-          dayMain={duneSNXStakerRows.dayMain}
-          dayOvm={duneSNXStakerRows.dayOvm}
-          weekAll={duneSNXStakerRows.weekAll}
-          weekMain={duneSNXStakerRows.weekMain}
-          weekOvm={duneSNXStakerRows.weekOvm}
-          monthAll={duneSNXStakerRows.monthAll}
-          monthMain={duneSNXStakerRows.monthMain}
-          monthOvm={duneSNXStakerRows.monthOvm}
+          dayAll={duneSNXStakerRows.dayAll || []}
+          dayMain={duneSNXStakerRows.dayMain || []}
+          dayOvm={duneSNXStakerRows.dayOvm || []}
+          weekAll={duneSNXStakerRows.weekAll || []}
+          weekMain={duneSNXStakerRows.weekMain || []}
+          weekOvm={duneSNXStakerRows.weekOvm || []}
+          monthAll={duneSNXStakerRows.monthAll || []}
+          monthMain={duneSNXStakerRows.monthMain || []}
+          monthOvm={duneSNXStakerRows.monthOvm || []}
         />
 
         <TradeActivity
@@ -146,9 +145,9 @@ const Home = (props: any) => {
           allTimeInflationMain={props.stake.rewardsAmountMain}
           allTimeInflationOvm={props.stake.rewardsAmountOvm}
           allTimeInflationAll={props.stake.rewardsAmountAll}
-          inflationDataMain={duneInflationRows.inflationDataMain}
-          inflationDataOvm={duneInflationRows.inflationDataOvm}
-          inflationDataAll={duneInflationRows.inflationDataAll}
+          inflationDataMain={duneInflationRows.inflationDataMain || []}
+          inflationDataOvm={duneInflationRows.inflationDataOvm || []}
+          inflationDataAll={duneInflationRows.inflationDataAll || []}
         />
 
         <TradeFee
