@@ -1572,6 +1572,7 @@ export const getFuturesOneMinStatById = async function <K extends keyof FuturesO
     return formattedObj as Pick<FuturesOneMinStatResult, K>;
 };
 export const getFuturesOneMinStats = async function <K extends keyof FuturesOneMinStatResult>(url: string, options: MultiQueryOptions<FuturesOneMinStatFilter, FuturesOneMinStatResult>, args: FuturesOneMinStatArgs<K>): Promise<Pick<FuturesOneMinStatResult, K>[]> {
+    return []
     const paginatedOptions: Partial<MultiQueryOptions<FuturesOneMinStatFilter, FuturesOneMinStatResult>> = { ...options };
     let paginationKey: keyof FuturesOneMinStatFilter | null = null;
     let paginationValue = "";
