@@ -242,7 +242,6 @@ interface Row {
   snx_rewards: number
 }
 interface DataSourceRow {
-  day: string
   week: string
   SNX_totalSupply: number
   L1_totalSupply: number
@@ -282,17 +281,14 @@ export function divideInflation(rows: DataSourceRow[]) {
   }
 }
 
-interface TimeSort {
-  day: string
-}
+const sort = (a: object, b: object) => {
+  // @ts-ignore
+  const aDate = new Date(a.day || a.week)
+  // @ts-ignore
+  const bDate = new Date(b.day || b.week)
 
-const sort = (a: TimeSort, b: TimeSort) => {
-  const aDate = new Date(a.day)
-  const bDate = new Date(b.day)
-
-  // Check if aDate and bDate are valid Date objects
   if (isNaN(aDate.getTime()) || isNaN(bDate.getTime())) {
-    throw new Error('Invalid date format')
+    throw new Error(`Invalid date format ${a} ${b}`)
   }
 
   return bDate.getTime() - aDate.getTime()
