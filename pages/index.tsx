@@ -70,12 +70,6 @@ const Home = (props: any) => {
           totalLoanOvm={props.theTVL.ovmCurrentLoan}
           click={netId}
         />
-        <StakeAPY
-          click={netId}
-          avg={props.stake.apyAvg}
-          ovm={props.stake.apyOvm}
-          main={props.stake.apyMain}
-        />
         <NumStaker
           click={netId}
           currentStakerAll={duneSNXStaker.cumulative_evt}
@@ -213,7 +207,7 @@ export async function getStaticProps() {
       duneSNXStaking,
       duneSNXInflation,
       theTVL,
-      stake,
+      // stake,
       trades,
     },
   }
