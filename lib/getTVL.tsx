@@ -16,66 +16,66 @@ const mainnet_url =
 const optimism_url =
   'https://api.thegraph.com/subgraphs/name/synthetixio-team/optimism-main'
 
+const fetchTVL = async (block: number, network: string) => {
+  const tvlCall = await getDebtStates(
+    network,
+    {
+      orderBy: 'timestamp',
+      orderDirection: 'desc',
+      first: 1,
+      block: { number: block },
+    },
+    { debtEntry: true }
+  )
+
+  const activeDebt = tvlCall[0].debtEntry.toNumber()
+  return activeDebt
+}
+
+const fetchWrapper = async (block: number, network: string) => {
+  const wrapperCall = await getWrappers(
+    network,
+    { block: { number: block } },
+    { amountInUSD: true }
+  )
+
+  const activeWrapper = wrapperCall.reduce((sum: number, cur) => {
+    return sum + cur.amountInUSD.toNumber()
+  }, 0)
+
+  return activeWrapper
+}
+
+const fetchLoans = async (block: number, network: string) => {
+  const loanCall = await getLoans(
+    network,
+    {
+      block: { number: block },
+      where: { isOpen: true },
+      orderBy: 'collateralAmount',
+      orderDirection: 'desc',
+    },
+    { collateralAmount: true }
+  )
+
+  const rateCall = await getLatestRateById(
+    network,
+    { id: 'sETH' },
+    { rate: true }
+  )
+
+  const sEthRate = rateCall.rate.toNumber()
+
+  const activeLoans = loanCall.reduce((sum: number, cur) => {
+    return sum + cur.collateralAmount.toNumber() * sEthRate
+  }, 0)
+
+  return activeLoans
+}
+
+
 export const getTVL = async () => {
   const blocks = await block()
-
-  const fetchTVL = async (block: number, network: string) => {
-    const tvlCall = await getDebtStates(
-      network,
-      {
-        orderBy: 'timestamp',
-        orderDirection: 'desc',
-        first: 1,
-        block: { number: block },
-      },
-      { debtEntry: true }
-    )
-
-    const activeDebt = tvlCall[0].debtEntry.toNumber()
-
-    return activeDebt
-  }
-
-  const fetchWrapper = async (block: number, network: string) => {
-    const wrapperCall = await getWrappers(
-      network,
-      { block: { number: block } },
-      { amountInUSD: true }
-    )
-
-    const activeWrapper = wrapperCall.reduce((sum: number, cur) => {
-      return sum + cur.amountInUSD.toNumber()
-    }, 0)
-
-    return activeWrapper
-  }
-
-  const fetchLoans = async (block: number, network: string) => {
-    const loanCall = await getLoans(
-      network,
-      {
-        block: { number: block },
-        where: { isOpen: true },
-        orderBy: 'collateralAmount',
-        orderDirection: 'desc',
-      },
-      { collateralAmount: true }
-    )
-
-    const rateCall = await getLatestRateById(
-      network,
-      { id: 'sETH' },
-      { rate: true }
-    )
-
-    const sEthRate = rateCall.rate.toNumber()
-
-    const activeLoans = loanCall.reduce((sum: number, cur) => {
-      return sum + cur.collateralAmount.toNumber() * sEthRate
-    }, 0)
-
-    return activeLoans
-  }
 
   const ovmCurrentDebt = await fetchTVL(
     blocks.ovm.ovmCurrentBlock,
@@ -1008,3 +1008,18 @@ export const getTVL = async () => {
     allCurrentLoan,
   }
 }
+
+export const fetchMainnetTVL = async (block: number) =>
+  await fetchTVL(block, mainnet_url)
+export const fetchOVMTVL = async (block: number) =>
+  await fetchTVL(block, optimism_url)
+
+export const fetchMainnetWrapper = async (block: number) =>
+  await fetchWrapper(block, mainnet_url)
+export const fetchOVMWrapper = async (block: number) =>
+  await fetchWrapper(block, optimism_url)
+
+export const fetchMainnetLoans = async (block: number) =>
+  await fetchLoans(block, mainnet_url)
+export const fetchOVMLoans = async (block: number) =>
+  await fetchLoans(block, optimism_url)

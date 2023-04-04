@@ -3,8 +3,8 @@ import NodeCache from 'node-cache'
 import NetworkNavBar from '../components/network/NetworkNavBar'
 import Subheader from '../components/subheader/Subheader'
 import { useState } from 'react'
-import { getTVL } from '../lib/getTVL'
-import { divide, divideInflation } from '../lib/getDune'
+import { fetchOVMLoans, getTVL } from '../lib/getTVL'
+import { divide, divideInflation, divideTVL } from '../lib/getDune'
 import styles from '../styles/Main.module.css'
 import SnxStaked from '../components/data/snxStaked/SnxStaked'
 import TotalValueLocked from '../components/data/tvl/TotalValueLocked'
@@ -20,6 +20,9 @@ import StartStaking from '../components/data/startStaking/StartStaking'
 import DUNE from '../constants/dune'
 import { createFetchWithRetry } from '../lib/getDuneData'
 
+import { getTVLLoan } from '../lib/getTVLLoanWrapperOnChain'
+import convertTVL from '../lib/helper/convertTVL'
+
 const Home = (props: any) => {
   const [netId, setNetId] = useState<number>(20)
 
@@ -32,6 +35,7 @@ const Home = (props: any) => {
   const duneSNXStaker = props.duneSNXUsers.latestResult
   const staking = props.duneSNXStaking.latestResult
   const inflation = props.duneSNXInflation.latestResult
+  const duneTVLRows = props.duneSNXTVL.resultRows
 
   return (
     <div>
@@ -53,19 +57,19 @@ const Home = (props: any) => {
         />
 
         <TotalValueLocked
-          dayDataOvm={props.theTVL.dayOvm}
-          weekDataOvm={props.theTVL.weekOvm}
-          monthDataOvm={props.theTVL.monthOvm}
+          dayDataOvm={duneTVLRows.dayOvm || props.theTVL.dayOvm}
+          weekDataOvm={duneTVLRows.weekOvm || props.theTVL.weekOvm}
+          monthDataOvm={duneTVLRows.monthOvm || props.theTVL.monthOvm}
           totalDebtOvm={props.theTVL.ovmCurrentDebt}
           totalWrapperOvm={props.theTVL.ovmCurrentWrapper}
-          dayDataMain={props.theTVL.dayMain}
-          weekDataMain={props.theTVL.weekMain}
-          monthDataMain={props.theTVL.monthMain}
+          dayDataMain={duneTVLRows.dayMain || props.theTVL.dayMain}
+          weekDataMain={duneTVLRows.weekMain || props.theTVL.weekMain}
+          monthDataMain={duneTVLRows.monthMain || props.theTVL.monthMain}
           totalDebtMain={props.theTVL.mainCurrentDebt}
           totalWrapperMain={props.theTVL.mainCurrentWrapper}
-          dayDataAll={props.theTVL.dayAll}
-          weekDataAll={props.theTVL.weekAll}
-          monthDataAll={props.theTVL.monthAll}
+          dayDataAll={duneTVLRows.dayAll || props.theTVL.dayAll}
+          weekDataAll={duneTVLRows.weekAll || props.theTVL.weekAll}
+          monthDataAll={duneTVLRows.monthAll || props.theTVL.monthAll}
           totalLoanMain={props.theTVL.mainCurrentLoan}
           totalLoanOvm={props.theTVL.ovmCurrentLoan}
           click={netId}
@@ -86,7 +90,7 @@ const Home = (props: any) => {
           monthOvm={duneSNXStakerRows.monthOvm || []}
         />
 
-        <TradeActivity
+        {/* <TradeActivity
           click={netId}
           tradeDataMain={props.trades.tradeDataMain}
           tradeDataOvm={props.trades.tradeDataOvm}
@@ -123,7 +127,7 @@ const Home = (props: any) => {
           thirtyTradeMain={props.trades.thirtyTotalTradeMain}
           ninetyTradeOvm={props.trades.ninetyTotalTradeOvm}
           ninetyTradeMain={props.trades.ninetyTotalTradeMain}
-        />
+        /> */}
 
         <Inflation
           click={netId}
@@ -144,7 +148,7 @@ const Home = (props: any) => {
           inflationDataAll={duneInflationRows.inflationDataAll || []}
         />
 
-        <TradeFee
+        {/* <TradeFee
           click={netId}
           totalFeeAll={props.trades.allTotalFee}
           totalFeeMain={props.trades.totalFeeMain}
@@ -176,7 +180,7 @@ const Home = (props: any) => {
           ninetyFeeCollectMain={props.trades.ninetyFeeCollectMain}
           ninetyFeeCollectOvm={props.trades.ninetyFeeCollectOvm}
           allNinetyFeeCollect={props.trades.allNinetyFeeCollect}
-        />
+        /> */}
 
         <MoreStats />
         <StartStaking />
@@ -190,25 +194,37 @@ export default Home
 const cache = new NodeCache({ stdTTL: 86400 })
 
 export async function getStaticProps() {
+
   const duneSNXUsers = await createFetchWithRetry(DUNE.SNX_USERS, cache)()
   const duneSNXStaking = await createFetchWithRetry(DUNE.SNX_STAKING, cache)()
   const duneSNXInflation = await createFetchWithRetry(
     DUNE.SNX_INFLATION,
     cache
   )()
+  const duneSNXTVL = (await createFetchWithRetry(DUNE.SNX_TVL, cache)()) as {
+    resultRows: any[]
+    latestResult: any
+  }
 
+  // const trades = await tradeData()
   const stake = await staker()
-  const trades = await tradeData()
   const theTVL = await getTVL()
+  const onChain = await getTVLLoan()
+  const duneTVLRows = convertTVL(duneSNXTVL.resultRows, onChain)
 
   return {
     props: {
+      onChain,
       duneSNXUsers,
       duneSNXStaking,
       duneSNXInflation,
+      duneSNXTVL: {
+        latestRow: duneSNXTVL.latestResult,
+        resultRows: duneTVLRows,
+      },
       theTVL,
-      // stake,
-      trades,
+      stake,
+      // trades,
     },
   }
 }

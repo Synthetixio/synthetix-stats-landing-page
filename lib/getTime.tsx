@@ -1,3 +1,34 @@
+export const getTs = ({
+  day,
+  week,
+  month,
+}: {
+  day?: number
+  week?: number
+  month?: number
+}) => {
+  const ts = Math.floor(Date.now() / 1e3)
+  const oneDay = 3600 * 24
+  const dayMinus = day ? oneDay * day : 0
+  const weekMinus = week ? oneDay * 7 * week : 0
+  const monthMinus = month ? oneDay * 30 * month : 0
+
+  return (ts - dayMinus - weekMinus - monthMinus)
+}
+
+export const getTimeBlockRange = () => {
+  const arr = Array.from({ length: 7})
+  const dailyTs = arr.map((_, idx) => getTs({ day: idx + 1})) 
+  const weeklyTs = arr.map((_, idx) => getTs({ week: idx + 1})) 
+  const monthlyTs = arr.map((_, idx) => getTs({ month: idx + 1})) 
+
+  return {
+    dailyTs,
+    weeklyTs,
+    monthlyTs,
+  }
+}
+
 const getTime = () => {
   const ts = Math.floor(Date.now() / 1e3)
 

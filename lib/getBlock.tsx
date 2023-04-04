@@ -10,29 +10,32 @@ const mainnet_url =
 const optimism_url =
   'https://api.thegraph.com/subgraphs/name/synthetixio-team/optimism-main'
 
-export const block = async () => {
-  const getBlock = async (time: number, network: string) => {
-    const blockCall = await getRateUpdates(
-      network,
-      {
-        first: 1,
-        orderBy: 'timestamp',
-        orderDirection: 'desc',
-        where: {
-          timestamp_lt: time,
-        },
+const getBlock = async (time: number, network: string) => {
+  const blockCall = await getRateUpdates(
+    network,
+    {
+      first: 1,
+      orderBy: 'timestamp',
+      orderDirection: 'desc',
+      where: {
+        timestamp_lt: time,
       },
-      {
-        block: true,
-        timestamp: true,
-      }
-    )
+    },
+    {
+      block: true,
+      timestamp: true,
+    }
+  )
 
-    const block = blockCall[0].block.toNumber()
+  const block = blockCall[0].block.toNumber()
 
-    return block
-  }
+  return block
+}
 
+export const getMainnetBlock = async (time: number) => await getBlock(time, mainnet_url)
+export const getOVMBlock = async (time: number) => await getBlock(time, optimism_url)
+
+export const block = async () => {
   const ovmCurrentBlock = await getBlock(times.noHourAgo, optimism_url)
   const mainCurrentBlock = await getBlock(times.noHourAgo, mainnet_url)
 

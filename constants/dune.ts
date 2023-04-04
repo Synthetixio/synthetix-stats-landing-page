@@ -4,5 +4,6 @@ const DUNE = {
     SNX_USERS: '1895265',
     SNX_FEES: '1893390',
     SNX_TRADING_FEE: '1902409',
+    SNX_TVL: '1898719',
 }
 export default DUNE

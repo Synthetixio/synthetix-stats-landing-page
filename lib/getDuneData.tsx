@@ -45,8 +45,6 @@ function createFetchWithRetry(queryId: string, cache: NodeCache, body?: string) 
     }
     const executionId = await fetchExecutionId(queryId, body)
 
-    console.log(queryId, executionId);
-    
     async function checkStatusAndRetry() {
       const statusRes = await query(
         `https://api.dune.com/api/v1/execution/${executionId}/status`

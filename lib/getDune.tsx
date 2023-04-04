@@ -293,3 +293,149 @@ const sort = (a: object, b: object) => {
 
   return bDate.getTime() - aDate.getTime()
 }
+
+interface TVLQueryRow {
+  day: string
+  SDS_L2: number
+  SDS_L1: number
+  SDS_price: number
+  cratio: number
+  L1_stake_debt: number
+  L2_stake_debt: number
+  total_stake_debt: number
+  TVL_L1_Staked: number
+  TVL_L2_Staked: number
+  TVL_staked: number
+  L1_mCap: number
+  L2_mCap: number
+  total_mCap: number
+  SNX_price: number
+  L1_stake_ratio: number
+  L2_stake_ratio: number
+  Total_stake_ratio: number
+}
+
+interface TVLRow {
+  date: string
+  debt: number
+  wrapper: number
+  loan: number
+}
+
+interface TVLData {
+  dayAll: TVLRow[]
+  dayMain: TVLRow[]
+  dayOvm: TVLRow[]
+  weekAll: TVLRow[]
+  weekMain: TVLRow[]
+  weekOvm: TVLRow[]
+  monthAll: TVLRow[]
+  monthMain: TVLRow[]
+  monthOvm: TVLRow[]
+}
+
+export function divideTVL(rows: TVLQueryRow[]): TVLData {
+  if (!rows || rows.length === 0) {
+    return {}
+  }
+
+  const sorted = rows.sort(sort)
+
+  const dayAll: TVLRow[] = []
+  const dayMain: TVLRow[] = []
+  const dayOvm: TVLRow[] = []
+
+  const weekAll: TVLRow[] = []
+  const weekMain: TVLRow[] = []
+  const weekOvm: TVLRow[] = []
+
+  const monthAll: TVLRow[] = []
+  const monthMain: TVLRow[] = []
+  const monthOvm: TVLRow[] = []
+
+  sorted.slice(0, 7).forEach((row: TVLQueryRow) => {
+    const { day, TVL_L1_Staked, TVL_L2_Staked, TVL_staked } = row
+    const date = convertDate(day)
+    dayAll.unshift({
+      date,
+      debt: TVL_staked,
+      wrapper: 0,
+      loan: 0,
+    })
+    dayMain.unshift({
+      date,
+      debt: TVL_L1_Staked,
+      wrapper: 0,
+      loan: 0,
+    })
+    dayOvm.unshift({
+      date,
+      debt: TVL_L2_Staked,
+      wrapper: 0,
+      loan: 0,
+    })
+  })
+
+  sorted.slice(0, 7 * 7).forEach((row, idx) => {
+    if (idx % 7 === 0) {
+      const { day, TVL_L1_Staked, TVL_L2_Staked, TVL_staked } = row
+      const date = convertDate(day)
+      weekAll.unshift({
+        date,
+        debt: TVL_staked,
+        wrapper: 0,
+        loan: 0,
+      })
+      weekMain.unshift({
+        date,
+        debt: TVL_L1_Staked,
+        wrapper: 0,
+        loan: 0,
+      })
+      weekOvm.unshift({
+        date,
+        debt: TVL_L2_Staked,
+        wrapper: 0,
+        loan: 0,
+      })
+    }
+  })
+
+  //   monthly OVM
+  sorted.slice(0, 30 * 7).forEach((row, idx: number) => {
+    if (idx % 30 === 0) {
+      const { day, TVL_L1_Staked, TVL_L2_Staked, TVL_staked } = row
+      const date = convertDate(day)
+      monthAll.unshift({
+        date,
+        debt: TVL_staked,
+        wrapper: 0,
+        loan: 0,
+      })
+      monthMain.unshift({
+        date,
+        debt: TVL_L1_Staked,
+        wrapper: 0,
+        loan: 0,
+      })
+      monthOvm.unshift({
+        date,
+        debt: TVL_L2_Staked,
+        wrapper: 0,
+        loan: 0,
+      })
+    }
+  })
+
+  return {
+    dayOvm,
+    dayMain,
+    dayAll,
+    weekOvm,
+    weekMain,
+    weekAll,
+    monthOvm,
+    monthMain,
+    monthAll,
+  }
+}
