@@ -334,7 +334,7 @@ interface TVLData {
   monthOvm: TVLRow[]
 }
 
-export function divideTVL(rows: TVLQueryRow[]): TVLData {
+export function divideTVL(rows: TVLQueryRow[]): TVLData | object {
   if (!rows || rows.length === 0) {
     return {}
   }
