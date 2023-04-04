@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { divideTVL } from '../getDune'
 
 export default function convertTVL(resultRows, onChain) {

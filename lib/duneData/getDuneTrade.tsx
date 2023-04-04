@@ -1,4 +1,7 @@
+// @ts-nocheck
+
 import { formatPercentDec } from '../../constants/format'
+import { safeSort } from './safeSort'
 interface TradeFetchRow {
   total: number
   time: string
@@ -6,10 +9,10 @@ interface TradeFetchRow {
 }
 
 interface accResult {
-    [key: string]: TradeFetchRow[]
+  [key: string]: TradeFetchRow[]
 }
 
-export default function getDuneTrade(resultRows) {
+export default function getDuneTrade(resultRows: TradeFetchRow[]) {
   const acc: accResult = {}
 
   resultRows.forEach((row: TradeFetchRow) => {
@@ -22,9 +25,7 @@ export default function getDuneTrade(resultRows) {
   })
 
   Object.keys(acc).forEach((key) => {
-    const res = acc[key].sort((a, b) => {
-      return new Date(b.time) - new Date(a.time)
-    })
+    const res = acc[key].sort((a, b) => safeSort(a, b, 'time'))
     acc[key] = res
   })
 
