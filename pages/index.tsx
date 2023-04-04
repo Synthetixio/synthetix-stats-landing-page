@@ -2,7 +2,7 @@ import NodeCache from 'node-cache'
 
 import NetworkNavBar from '../components/network/NetworkNavBar'
 import Subheader from '../components/subheader/Subheader'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { fetchOVMLoans, getTVL } from '../lib/getTVL'
 import { divide, divideInflation, divideTVL } from '../lib/getDune'
 import styles from '../styles/Main.module.css'
@@ -22,6 +22,7 @@ import { createFetchWithRetry } from '../lib/getDuneData'
 
 import { getTVLLoan } from '../lib/getTVLLoanWrapperOnChain'
 import convertTVL from '../lib/helper/convertTVL'
+import getDuneTrade from '../lib/duneData/getDuneTrade'
 
 const Home = (props: any) => {
   const [netId, setNetId] = useState<number>(20)
@@ -29,6 +30,7 @@ const Home = (props: any) => {
   const handleNetwork = (buttons: any) => {
     setNetId(buttons.id)
   }
+  const duneTrade = getDuneTrade(props.duneSNXTrading.resultRows)
 
   const duneSNXStakerRows = divide(props.duneSNXUsers.resultRows)
   const duneInflationRows = divideInflation(props.duneSNXInflation.resultRows)
@@ -36,6 +38,7 @@ const Home = (props: any) => {
   const staking = props.duneSNXStaking.latestResult
   const inflation = props.duneSNXInflation.latestResult
   const duneTVLRows = props.duneSNXTVL.resultRows
+  console.log(netId)
 
   return (
     <div>
@@ -148,39 +151,41 @@ const Home = (props: any) => {
           inflationDataAll={duneInflationRows.inflationDataAll || []}
         />
 
-        {/* <TradeFee
-          click={netId}
-          totalFeeAll={props.trades.allTotalFee}
-          totalFeeMain={props.trades.totalFeeMain}
-          totalFeeOvm={props.trades.totalFeeOvm}
-          dailyFeeMain={props.trades.dailyTotalFeeMain}
-          dailyFeeOvm={props.trades.dailyTotalFeeOvm}
-          sevenFeeMain={props.trades.sevenTotalFeeMain}
-          sevenFeeOvm={props.trades.sevenTotalFeeOvm}
-          thirtyFeeMain={props.trades.thirtyTotalFeeMain}
-          thirtyFeeOvm={props.trades.thirtyTotalFeeOvm}
-          ninetyFeeMain={props.trades.ninetyTotalFeeMain}
-          ninetyFeeOvm={props.trades.ninetyTotalFeeOvm}
-          allDailyFee={props.trades.allDailyFee}
-          allSevenFee={props.trades.allSevenFee}
-          allThirtyFee={props.trades.allThirtyFee}
-          allNinetyFee={props.trades.allNinetyFee}
-          feeAll={props.trades.feeCollectAll}
-          feeMain={props.trades.feeCollectMain}
-          feeOvm={props.trades.feeCollectOvm}
-          dailyFeeCollectOvm={props.trades.dailyFeeCollectOvm}
-          dailyFeeCollectMain={props.trades.dailyFeeCollectMain}
-          allDailyFeeCollect={props.trades.allDailyFeeCollect}
-          sevenFeeCollectMain={props.trades.sevenFeeCollectMain}
-          sevenFeeCollectOvm={props.trades.sevenFeeCollectOvm}
-          allSevenFeeCollect={props.trades.allSevenFeeCollect}
-          thirtyFeeCollectMain={props.trades.thirtyFeeCollectMain}
-          thirtyFeeCollectOvm={props.trades.thirtyFeeCollectOvm}
-          allThirtyFeeCollect={props.trades.allThirtyFeeCollect}
-          ninetyFeeCollectMain={props.trades.ninetyFeeCollectMain}
-          ninetyFeeCollectOvm={props.trades.ninetyFeeCollectOvm}
-          allNinetyFeeCollect={props.trades.allNinetyFeeCollect}
-        /> */}
+        {netId === 20 && (
+          <TradeFee
+            click={netId}
+            totalFeeAll={duneTrade.wholeTimeFees.projects}
+            totalFeeMain={props.trades.totalFeeMain}
+            totalFeeOvm={props.trades.totalFeeOvm}
+            dailyFeeMain={props.trades.dailyTotalFeeMain}
+            dailyFeeOvm={props.trades.dailyTotalFeeOvm}
+            sevenFeeMain={props.trades.sevenTotalFeeMain}
+            sevenFeeOvm={props.trades.sevenTotalFeeOvm}
+            thirtyFeeMain={props.trades.thirtyTotalFeeMain}
+            thirtyFeeOvm={props.trades.thirtyTotalFeeOvm}
+            ninetyFeeMain={props.trades.ninetyTotalFeeMain}
+            ninetyFeeOvm={props.trades.ninetyTotalFeeOvm}
+            allDailyFee={duneTrade.dayFees.projects}
+            allSevenFee={duneTrade.weekFees.projects}
+            allThirtyFee={duneTrade.monthFees.projects}
+            allNinetyFee={duneTrade.threeMonthesFees.projects}
+            feeAll={duneTrade.wholeTimeFees.totalFee}
+            feeMain={props.trades.feeCollectMain}
+            feeOvm={props.trades.feeCollectOvm}
+            dailyFeeCollectOvm={props.trades.dailyFeeCollectOvm}
+            dailyFeeCollectMain={props.trades.dailyFeeCollectMain}
+            allDailyFeeCollect={duneTrade.dayFees.totalFee}
+            sevenFeeCollectMain={props.trades.sevenFeeCollectMain}
+            sevenFeeCollectOvm={props.trades.sevenFeeCollectOvm}
+            allSevenFeeCollect={duneTrade.weekFees.totalFee}
+            thirtyFeeCollectMain={props.trades.thirtyFeeCollectMain}
+            thirtyFeeCollectOvm={props.trades.thirtyFeeCollectOvm}
+            allThirtyFeeCollect={duneTrade.monthFees.totalFee}
+            ninetyFeeCollectMain={props.trades.ninetyFeeCollectMain}
+            ninetyFeeCollectOvm={props.trades.ninetyFeeCollectOvm}
+            allNinetyFeeCollect={duneTrade.threeMonthesFees.totalFee}
+          />
+        )}
 
         <MoreStats />
         <StartStaking />
@@ -191,10 +196,29 @@ const Home = (props: any) => {
 
 export default Home
 
+// export async function getStaticProps() {
+//   const cache = new NodeCache({ stdTTL: 86400 })
+
+//   const params = { query_parameters: { 'Time scale': 'day' } }
+
+//   const duneSNXTrading = await createFetchWithRetry(
+//     DUNE.SNX_TRADING_FEE,
+//     cache,
+//     JSON.stringify(params)
+//   )()
+//   const trades = await tradeData()
+
+//   return {
+//     props: {
+//       duneSNXTrading,
+//       trades,
+//     },
+//   }
+// }
+
 const cache = new NodeCache({ stdTTL: 86400 })
 
 export async function getStaticProps() {
-
   const duneSNXUsers = await createFetchWithRetry(DUNE.SNX_USERS, cache)()
   const duneSNXStaking = await createFetchWithRetry(DUNE.SNX_STAKING, cache)()
   const duneSNXInflation = await createFetchWithRetry(
@@ -212,19 +236,25 @@ export async function getStaticProps() {
   const onChain = await getTVLLoan()
   const duneTVLRows = convertTVL(duneSNXTVL.resultRows, onChain)
 
+  const params = { query_parameters: { 'Time scale': 'day' } }
+  const duneSNXTrading = await createFetchWithRetry(
+    DUNE.SNX_TRADING_FEE,
+    cache,
+    JSON.stringify(params)
+  )()
   return {
     props: {
-      onChain,
       duneSNXUsers,
       duneSNXStaking,
       duneSNXInflation,
+      duneSNXTrading,
       duneSNXTVL: {
         latestRow: duneSNXTVL.latestResult,
         resultRows: duneTVLRows,
       },
       theTVL,
       stake,
-      // trades,
+      trades: {},
     },
   }
 }
