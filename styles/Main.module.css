@@ -6,9 +6,9 @@
     grid-template: auto / repeat(5,minmax(0,1fr));
     grid-template-areas:
      "snxStaked snxStaked tvl tvl tvl"
-     "stakeAPY stakeAPY tvl tvl tvl"
+     "snxStaked snxStaked tvl tvl tvl"
      "numStaker numStaker numStaker numStaker numStaker"
-     "trades trades inflation inflation inflation"
+     "inflation inflation volumes volumes volumes"
      "trades trades tradeFee tradeFee tradeFee"
      "moreStats moreStats tradeFee tradeFee tradeFee"
      "startStaking startStaking tradeFee tradeFee tradeFee";
