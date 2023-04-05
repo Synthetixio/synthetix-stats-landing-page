@@ -8,6 +8,7 @@ import { divide, divideInflation, divideTVL } from '../lib/getDune'
 import styles from '../styles/Main.module.css'
 import SnxStaked from '../components/data/snxStaked/SnxStaked'
 import TotalValueLocked from '../components/data/tvl/TotalValueLocked'
+import Volumes from '../components/data/volumes/Volumes'
 import StakeAPY from '../components/data/stakeAPY/StakeAPY'
 import NumStaker from '../components/data/numStaker/numStaker'
 import TradeActivity from '../components/data/tradeActivity/TradeActivity'
@@ -22,6 +23,7 @@ import { createFetchWithRetry } from '../lib/getDuneData'
 
 import { getTVLLoan } from '../lib/getTVLLoanWrapperOnChain'
 import convertTVL from '../lib/helper/convertTVL'
+import convertVolumes from '../lib/helper/convertVolumes'
 import getDuneTrade from '../lib/duneData/getDuneTrade'
 
 const Home = (props: any) => {
@@ -30,15 +32,16 @@ const Home = (props: any) => {
   const handleNetwork = (buttons: any) => {
     setNetId(buttons.id)
   }
-  const duneTrade = getDuneTrade(props.duneSNXTrading.resultRows)
 
+  const duneVolumeRows = convertVolumes(props.duneVolumes.resultRows)
+
+  const duneTVLRows = props.duneSNXTVL.resultRows
+  const duneTrade = getDuneTrade(props.duneSNXTrading.resultRows)
   const duneSNXStakerRows = divide(props.duneSNXUsers.resultRows)
   const duneInflationRows = divideInflation(props.duneSNXInflation.resultRows)
   const duneSNXStaker = props.duneSNXUsers.latestResult
   const staking = props.duneSNXStaking.latestResult
   const inflation = props.duneSNXInflation.latestResult
-  const duneTVLRows = props.duneSNXTVL.resultRows
-  console.log(netId)
 
   return (
     <div>
@@ -186,6 +189,13 @@ const Home = (props: any) => {
             allNinetyFeeCollect={duneTrade.threeMonthesFees.totalFee}
           />
         )}
+        <Volumes
+          latestResult={props.duneVolumes.latestResult}
+          dayDataAll={duneVolumeRows.dayData}
+          weekDataAll={duneVolumeRows.weekData}
+          monthDataAll={duneVolumeRows.monthData}
+          click={netId}
+        />
 
         <MoreStats />
         <StartStaking />
@@ -199,19 +209,17 @@ export default Home
 // export async function getStaticProps() {
 //   const cache = new NodeCache({ stdTTL: 86400 })
 
-//   const params = { query_parameters: { 'Time scale': 'day' } }
+//   const params = { query_parameters: { Interval: '365 days' } }
 
-//   const duneSNXTrading = await createFetchWithRetry(
-//     DUNE.SNX_TRADING_FEE,
+//   const duneVolumes = await createFetchWithRetry(
+//     DUNE.SNX_VOLUMES,
 //     cache,
 //     JSON.stringify(params)
 //   )()
-//   const trades = await tradeData()
 
 //   return {
 //     props: {
-//       duneSNXTrading,
-//       trades,
+//       duneVolumes,
 //     },
 //   }
 // }
@@ -242,8 +250,16 @@ export async function getStaticProps() {
     cache,
     JSON.stringify(params)
   )()
+
+  const duneVolumes = await createFetchWithRetry(
+    DUNE.SNX_VOLUMES,
+    cache,
+    JSON.stringify({ query_parameters: { Interval: '365 days' } })
+  )()
+
   return {
     props: {
+      duneVolumes,
       duneSNXUsers,
       duneSNXStaking,
       duneSNXInflation,
