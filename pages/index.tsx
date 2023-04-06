@@ -9,6 +9,7 @@ import styles from '../styles/Main.module.css'
 import SnxStaked from '../components/data/snxStaked/SnxStaked'
 import TotalValueLocked from '../components/data/tvl/TotalValueLocked'
 import Volumes from '../components/data/volumes/Volumes'
+import Fees from '../components/data/fees/Fees'
 import StakeAPY from '../components/data/stakeAPY/StakeAPY'
 import NumStaker from '../components/data/numStaker/numStaker'
 import TradeActivity from '../components/data/tradeActivity/TradeActivity'
@@ -24,7 +25,9 @@ import { createFetchWithRetry } from '../lib/getDuneData'
 import { getTVLLoan } from '../lib/getTVLLoanWrapperOnChain'
 import convertTVL from '../lib/helper/convertTVL'
 import convertVolumes from '../lib/helper/convertVolumes'
+import convertFees from '../lib/helper/convertFees'
 import getDuneTrade from '../lib/duneData/getDuneTrade'
+
 
 const Home = (props: any) => {
   const [netId, setNetId] = useState<number>(20)
@@ -33,10 +36,21 @@ const Home = (props: any) => {
     setNetId(buttons.id)
   }
 
-  const duneVolumeRows = convertVolumes(props.duneVolumes.resultRows)
+  const duneFees = convertFees(props.duneFees.resultRows)
+  
 
+  return (<div>
+    <Fees
+      click={netId}
+      latestResult={props.duneFees.latestResult}
+      dayDataAll={duneFees.dayData}
+      weekDataAll={duneFees.weekData}
+      monthDataAll={duneFees.monthData}
+      dataAll={duneFees.dataAll}
+    />
+  </div>)
+  const duneVolumeRows = convertVolumes(props.duneVolumes.resultRows)
   const duneTVLRows = props.duneSNXTVL.resultRows
-  const duneTrade = getDuneTrade(props.duneSNXTrading.resultRows)
   const duneSNXStakerRows = divide(props.duneSNXUsers.resultRows)
   const duneInflationRows = divideInflation(props.duneSNXInflation.resultRows)
   const duneSNXStaker = props.duneSNXUsers.latestResult
@@ -172,71 +186,71 @@ const Home = (props: any) => {
 
 export default Home
 
-// export async function getStaticProps() {
-//   const cache = new NodeCache({ stdTTL: 86400 })
+export async function getStaticProps() {
+  const cache = new NodeCache({ stdTTL: 86400 })
 
-//   const params = { query_parameters: { Interval: '365 days' } }
+  const params = { query_parameters: { Interval: '365 days' } }
+
+  const duneFees = await createFetchWithRetry(
+    DUNE.SNX_FEES,
+    cache,
+    JSON.stringify(params)
+  )()
+
+  return {
+    props: {
+      duneFees,
+    },
+  }
+}
+
+// const cache = new NodeCache({ stdTTL: 86400 })
+
+// export async function getStaticProps() {
+//   const duneSNXUsers = await createFetchWithRetry(DUNE.SNX_USERS, cache)()
+//   const duneSNXStaking = await createFetchWithRetry(DUNE.SNX_STAKING, cache)()
+//   const duneSNXInflation = await createFetchWithRetry(
+//     DUNE.SNX_INFLATION,
+//     cache
+//   )()
+//   const duneSNXTVL = (await createFetchWithRetry(DUNE.SNX_TVL, cache)()) as {
+//     resultRows: any[]
+//     latestResult: any
+//   }
+
+//   // const trades = await tradeData()
+//   const stake = await staker()
+//   const theTVL = await getTVL()
+//   const onChain = await getTVLLoan()
+//   const duneTVLRows = convertTVL(duneSNXTVL.resultRows, onChain)
+
+//   const params = { query_parameters: { 'Time scale': 'day' } }
+//   const duneSNXTrading = await createFetchWithRetry(
+//     DUNE.SNX_TRADING_FEE,
+//     cache,
+//     JSON.stringify(params)
+//   )()
 
 //   const duneVolumes = await createFetchWithRetry(
 //     DUNE.SNX_VOLUMES,
 //     cache,
-//     JSON.stringify(params)
+//     JSON.stringify({ query_parameters: { Interval: '365 days' } })
 //   )()
 
 //   return {
 //     props: {
 //       duneVolumes,
+//       duneSNXUsers,
+//       duneSNXStaking,
+//       duneSNXInflation,
+//       duneSNXTrading,
+//       duneSNXTVL: {
+//         latestRow: duneSNXTVL.latestResult,
+//         resultRows: duneTVLRows,
+//       },
+//       theTVL,
+//       stake,
+//       trades: {},
 //     },
 //   }
 // }
-
-const cache = new NodeCache({ stdTTL: 86400 })
-
-export async function getStaticProps() {
-  const duneSNXUsers = await createFetchWithRetry(DUNE.SNX_USERS, cache)()
-  const duneSNXStaking = await createFetchWithRetry(DUNE.SNX_STAKING, cache)()
-  const duneSNXInflation = await createFetchWithRetry(
-    DUNE.SNX_INFLATION,
-    cache
-  )()
-  const duneSNXTVL = (await createFetchWithRetry(DUNE.SNX_TVL, cache)()) as {
-    resultRows: any[]
-    latestResult: any
-  }
-
-  // const trades = await tradeData()
-  const stake = await staker()
-  const theTVL = await getTVL()
-  const onChain = await getTVLLoan()
-  const duneTVLRows = convertTVL(duneSNXTVL.resultRows, onChain)
-
-  const params = { query_parameters: { 'Time scale': 'day' } }
-  const duneSNXTrading = await createFetchWithRetry(
-    DUNE.SNX_TRADING_FEE,
-    cache,
-    JSON.stringify(params)
-  )()
-
-  const duneVolumes = await createFetchWithRetry(
-    DUNE.SNX_VOLUMES,
-    cache,
-    JSON.stringify({ query_parameters: { Interval: '365 days' } })
-  )()
-
-  return {
-    props: {
-      duneVolumes,
-      duneSNXUsers,
-      duneSNXStaking,
-      duneSNXInflation,
-      duneSNXTrading,
-      duneSNXTVL: {
-        latestRow: duneSNXTVL.latestResult,
-        resultRows: duneTVLRows,
-      },
-      theTVL,
-      stake,
-      trades: {},
-    },
-  }
-}
