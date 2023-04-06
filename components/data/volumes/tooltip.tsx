@@ -5,7 +5,7 @@ import { DisplayRow } from '../../../lib/helper/convertVolumes'
 
 // date
 // tvl
-// staking debt pool
+// SNX Staked
 // wrapper
 
 const CustomTooltip = ({

@@ -4,7 +4,7 @@ import styles from './Tooltip.module.css'
 
 // date
 // tvl
-// staking debt pool
+// SNX Staked
 // wrapper
 const CustomTooltip = ({
   active,
@@ -28,7 +28,7 @@ const CustomTooltip = ({
         <p className={styles.TTlabel}>{label}</p>
         <h6 className={styles.TTheading}>TVL</h6>
         <p className={styles.TTtvl}>{formatMoney.format(tvl)}</p>
-        <h6 className={styles.TTheading}>Staking Debt Pool</h6>
+        <h6 className={styles.TTheading}>SNX Staked</h6>
         <p className={styles.TTdebt}>{debtVal ? formatMoney.format(debtVal) : 0}</p>
         <h6 className={styles.TTheading}>Wrappers</h6>
         <p className={styles.TTwrapper}>{wrapperVal ? formatMoney.format(wrapperVal) : 0}</p>

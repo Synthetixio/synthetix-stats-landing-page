@@ -53,8 +53,6 @@ const TotalValueLocked = ({
   const allData =
     timeFrame === 1 ? dayDataAll : timeFrame === 2 ? weekDataAll : monthDataAll
 
-  console.log(allData)
-
   const ttInfo = `Total Value Locked within SNX Ecosystem. Updated every 15 minutes`
 
   return (

@@ -64,9 +64,6 @@ const TotalValueLocked = ({
 
   const [timeFrame, setTimeFrame] = useState(1);
 
-
-
-
   const handleActive = (option: any) => {
     setTimeFrame(option.value);
   };
@@ -206,10 +203,6 @@ const TotalValueLocked = ({
               strokeWidth={5}
               stroke="#31D8A4"
             />
-
-
-
-
             <Tooltip
               content={<CustomToolTip />}
             />
@@ -221,7 +214,7 @@ const TotalValueLocked = ({
 
       <div className={styles.bottom}>
         <div className={styles.debtPool}>
-          <h5 className={styles.stakingColor}>Staking Debt Pool</h5>
+          <h5 className={styles.stakingColor}>SNX Staked</h5>
           <p className={styles.debtWrapVal}>{click === 1 ? mainDebt : click === 10 ? ovmDebt : allDebt}</p>
         </div>
 
