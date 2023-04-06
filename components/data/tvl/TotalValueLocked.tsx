@@ -97,9 +97,8 @@ const TotalValueLocked = ({
       <div className={styles.topBar}>
         <div>
           <div className={styles.titleRow}>
-            <h3 className={styles.tvl}>Total Value Locked </h3>
+            <h3 className={styles.tvl}>SNX & Debt Minted</h3>
             <InfoTooltip content={ttInfo}>
-
               <span
                 className={styles.icon}
               >
@@ -172,27 +171,6 @@ const TotalValueLocked = ({
               tickCount={5}
 
             />
-
-            <Area
-              type="linear"
-              dataKey="loan"
-              fill="url(#loanL)"
-              fillOpacity={0.6}
-              stackId={2}
-              strokeWidth={5}
-              stroke="#fff"
-            />
-
-            <Area
-              type="linear"
-              dataKey="wrapper"
-              fill="url(#wrapperL)"
-              fillOpacity={0.6}
-              stackId={2}
-              strokeWidth={5}
-              stroke="#ED1EFF"
-            />
-
 
             <Area
               type="linear"
