@@ -20,6 +20,7 @@ interface TVL {
   dayDataAll: DisplayRow[]
   weekDataAll: DisplayRow[]
   monthDataAll: DisplayRow[]
+  dataAll: DisplayRow[]
   latestResult: DisplayRow
   click: number
 }
@@ -28,12 +29,14 @@ const TotalValueLocked = ({
   dayDataAll,
   weekDataAll,
   monthDataAll,
+  dataAll,
   latestResult,
 }: TVL) => {
   const optionMap = [
-    { value: 1, label: '1 Day' },
-    { value: 2, label: '1 Week' },
-    { value: 3, label: '1 Month' },
+    { value: 1, label: 'Daily' },
+    { value: 2, label: 'Weekly' },
+    { value: 3, label: 'Monthly' },
+    { value: 4, label: 'All Time'}
   ]
 
   const [timeFrame, setTimeFrame] = useState(1)
@@ -50,8 +53,8 @@ const TotalValueLocked = ({
   const perpV2Volume = formatMoney.format(PERPv2_vol)
   const atomicVolume = formatMoney.format(atomic_volume)
 
-  const allData =
-    timeFrame === 1 ? dayDataAll : timeFrame === 2 ? weekDataAll : monthDataAll
+  const allData = [dayDataAll, weekDataAll, monthDataAll, dataAll][timeFrame - 1]
+  
 
   const ttInfo = `Total Value Locked within SNX Ecosystem. Updated every 15 minutes`
 
@@ -130,8 +133,8 @@ const TotalValueLocked = ({
               dataKey="PERPv1_vol"
               fill="url(#loanL)"
               fillOpacity={0.6}
-              stackId={2}
-              strokeWidth={2}
+              stackId={1}
+              strokeWidth={1}
               stroke="#fff"
             />
 
@@ -139,9 +142,9 @@ const TotalValueLocked = ({
               type="linear"
               dataKey="atomic_volume"
               fill="url(#wrapperL)"
-              fillOpacity={0.6}
-              stackId={2}
-              strokeWidth={2}
+              fillOpacity={0.8}
+              stackId={3}
+              strokeWidth={1}
               stroke="#ED1EFF"
             />
 
@@ -151,7 +154,7 @@ const TotalValueLocked = ({
               fill="url(#debtL)"
               fillOpacity={0.6}
               stackId={2}
-              strokeWidth={2}
+              strokeWidth={1}
               stroke="#31D8A4"
             />
 

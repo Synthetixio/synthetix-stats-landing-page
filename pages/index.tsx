@@ -156,6 +156,7 @@ const Home = (props: any) => {
 
         <Volumes
           latestResult={props.duneVolumes.latestResult}
+          dataAll={duneVolumeRows.dataAll}
           dayDataAll={duneVolumeRows.dayData}
           weekDataAll={duneVolumeRows.weekData}
           monthDataAll={duneVolumeRows.monthData}

@@ -23,6 +23,7 @@ export interface Result {
   dayData: DisplayRow[]
   weekData: DisplayRow[]
   monthData: DisplayRow[]
+  dataAll: DisplayRow[]
 }
 
 export default function divideDuneVolumes(
@@ -40,10 +41,10 @@ export default function divideDuneVolumes(
       atomic_volume,
       total_volume,
     }
-    if (idx % 7 === 0) {
+    if (idx < 7 * 7) {
       weekData.push(displayRow)
     }
-    if (idx % 30 === 0) {
+    if (idx < 7 * 30) {
       monthData.push(displayRow)
     }
     dayData.push(displayRow)
@@ -51,7 +52,8 @@ export default function divideDuneVolumes(
 
   return {
     dayData: dayData.slice(0, 7).reverse(),
-    weekData: weekData.slice(0, 7).reverse(),
-    monthData: monthData.slice(0, 7).reverse(),
+    weekData: weekData.reverse(),
+    monthData: monthData.reverse(),
+    dataAll: dayData.reverse(),
   }
 }
