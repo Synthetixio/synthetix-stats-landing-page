@@ -154,41 +154,6 @@ const Home = (props: any) => {
           inflationDataAll={duneInflationRows.inflationDataAll || []}
         />
 
-        {netId === 20 && (
-          <TradeFee
-            click={netId}
-            totalFeeAll={duneTrade.wholeTimeFees.projects}
-            totalFeeMain={props.trades.totalFeeMain}
-            totalFeeOvm={props.trades.totalFeeOvm}
-            dailyFeeMain={props.trades.dailyTotalFeeMain}
-            dailyFeeOvm={props.trades.dailyTotalFeeOvm}
-            sevenFeeMain={props.trades.sevenTotalFeeMain}
-            sevenFeeOvm={props.trades.sevenTotalFeeOvm}
-            thirtyFeeMain={props.trades.thirtyTotalFeeMain}
-            thirtyFeeOvm={props.trades.thirtyTotalFeeOvm}
-            ninetyFeeMain={props.trades.ninetyTotalFeeMain}
-            ninetyFeeOvm={props.trades.ninetyTotalFeeOvm}
-            allDailyFee={duneTrade.dayFees.projects}
-            allSevenFee={duneTrade.weekFees.projects}
-            allThirtyFee={duneTrade.monthFees.projects}
-            allNinetyFee={duneTrade.threeMonthesFees.projects}
-            feeAll={duneTrade.wholeTimeFees.totalFee}
-            feeMain={props.trades.feeCollectMain}
-            feeOvm={props.trades.feeCollectOvm}
-            dailyFeeCollectOvm={props.trades.dailyFeeCollectOvm}
-            dailyFeeCollectMain={props.trades.dailyFeeCollectMain}
-            allDailyFeeCollect={duneTrade.dayFees.totalFee}
-            sevenFeeCollectMain={props.trades.sevenFeeCollectMain}
-            sevenFeeCollectOvm={props.trades.sevenFeeCollectOvm}
-            allSevenFeeCollect={duneTrade.weekFees.totalFee}
-            thirtyFeeCollectMain={props.trades.thirtyFeeCollectMain}
-            thirtyFeeCollectOvm={props.trades.thirtyFeeCollectOvm}
-            allThirtyFeeCollect={duneTrade.monthFees.totalFee}
-            ninetyFeeCollectMain={props.trades.ninetyFeeCollectMain}
-            ninetyFeeCollectOvm={props.trades.ninetyFeeCollectOvm}
-            allNinetyFeeCollect={duneTrade.threeMonthesFees.totalFee}
-          />
-        )}
         <Volumes
           latestResult={props.duneVolumes.latestResult}
           dayDataAll={duneVolumeRows.dayData}
