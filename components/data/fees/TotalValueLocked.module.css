@@ -1,5 +1,5 @@
 .container {
-  grid-area: volumes;
+  grid-area: fees;
   background: #0b0b22;
   display: flex;
   flex-direction: column;

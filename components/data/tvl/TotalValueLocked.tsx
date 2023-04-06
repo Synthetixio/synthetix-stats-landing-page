@@ -190,7 +190,7 @@ const TotalValueLocked = ({
         </ResponsiveContainer>
       </div>
 
-      <div className={styles.bottom}>
+      {/* <div className={styles.bottom}>
         <div className={styles.debtPool}>
           <h5 className={styles.stakingColor}>SNX Staked</h5>
           <p className={styles.debtWrapVal}>{click === 1 ? mainDebt : click === 10 ? ovmDebt : allDebt}</p>
@@ -205,7 +205,7 @@ const TotalValueLocked = ({
           <h5 className={styles.loanColor}>Loans</h5>
           <p className={styles.debtWrapVal}>{click === 1 ? mainLoan : click === 10 ? ovmLoan : allLoans}</p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
