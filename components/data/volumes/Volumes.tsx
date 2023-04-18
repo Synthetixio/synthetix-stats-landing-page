@@ -46,11 +46,10 @@ const TotalValueLocked = ({
   }
 
   // click === 1 ? mainnet : click === 10 ? optimism : click === 21 ? all networks
-  const { total_volume, PERPv1_vol, PERPv2_vol, atomic_volume } = latestResult
+  const { total_volume, PERP, atomic_volume } = latestResult
   const totalVolume = formatMoney.format(total_volume)
 
-  const perpV1Volume = formatMoney.format(PERPv1_vol)
-  const perpV2Volume = formatMoney.format(PERPv2_vol)
+  const perpVolume = formatMoney.format(PERP)
   const atomicVolume = formatMoney.format(atomic_volume)
 
   const allData = [dayDataAll, weekDataAll, monthDataAll, dataAll][timeFrame - 1]
@@ -164,11 +163,6 @@ const TotalValueLocked = ({
       </div>
 
       <div className={styles.bottom}>
-        <div className={styles.debtPool}>
-          <h5 className={styles.stakingColor}>PERP V2 Volume</h5>
-          <p className={styles.debtWrapVal}>{perpV2Volume}</p>
-        </div>
-
         <div className={styles.wrapper}>
           <h5 className={styles.wrapperColor}>atomic volume</h5>
           <p className={styles.debtWrapVal}>{atomicVolume}</p>
@@ -176,7 +170,7 @@ const TotalValueLocked = ({
 
         <div className={styles.loan}>
           <h5 className={styles.loanColor}>perp v1 volume</h5>
-          <p className={styles.debtWrapVal}>{perpV1Volume}</p>
+          <p className={styles.debtWrapVal}>{perpVolume}</p>
         </div>
       </div>
     </div>
