@@ -13,8 +13,7 @@ interface VolumeFetchRow {
 
 export interface DisplayRow {
   date: string
-  PERPv1_vol: number
-  PERPv2_vol: number
+  PERP: number
   atomic_volume: number
   total_volume: number
 }
@@ -36,8 +35,7 @@ export default function divideDuneVolumes(
     const { time, PERPv1_vol, PERPv2_vol, atomic_volume, total_volume } = row
     const displayRow: DisplayRow = {
       date: convertDate(time),
-      PERPv1_vol,
-      PERPv2_vol,
+      PERP: PERPv1_vol + PERPv2_vol,
       atomic_volume,
       total_volume,
     }

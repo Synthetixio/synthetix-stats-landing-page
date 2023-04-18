@@ -15,7 +15,7 @@ const CustomTooltip = ({
 }: TooltipProps<number, string>) => {
 
   if (active && payload) {
-    const { PERPv1_vol, PERPv2_vol, atomic_volume, total_volume } =
+    const { PERP, atomic_volume, total_volume } =
       payload[0].payload as DisplayRow
 
     return (
@@ -23,13 +23,9 @@ const CustomTooltip = ({
         <p className={styles.TTlabel}>{label}</p>
         <h6 className={styles.TTheading}>TOTAL Volume</h6>
         <p className={styles.TTtvl}>{formatMoney.format(total_volume)}</p>
-        <h6 className={styles.TTheading}>PERP V2</h6>
+        <h6 className={styles.TTheading}>PERP</h6>
         <p className={styles.TTdebt}>
-          {PERPv2_vol ? formatMoney.format(PERPv2_vol) : 0}
-        </p>
-        <h6 className={styles.TTheading}>PERP V1</h6>
-        <p className={styles.TTloans}>
-          {PERPv1_vol ? formatMoney.format(PERPv1_vol) : 0}
+          {PERP ? formatMoney.format(PERP) : 0}
         </p>
         <h6 className={styles.TTheading}>ATOMIC VOLUME</h6>
         <p className={styles.TTwrapper}>
