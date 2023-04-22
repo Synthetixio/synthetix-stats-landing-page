@@ -169,7 +169,7 @@ const TotalValueLocked = ({
         </div>
 
         <div className={styles.loan}>
-          <h5 className={styles.loanColor}>perp v1 volume</h5>
+          <h5 className={styles.loanColor}>perp volume</h5>
           <p className={styles.debtWrapVal}>{perpVolume}</p>
         </div>
       </div>

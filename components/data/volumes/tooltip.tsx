@@ -23,7 +23,7 @@ const CustomTooltip = ({
         <p className={styles.TTlabel}>{label}</p>
         <h6 className={styles.TTheading}>TOTAL Volume</h6>
         <p className={styles.TTtvl}>{formatMoney.format(total_volume)}</p>
-        <h6 className={styles.TTheading}>PERP</h6>
+        <h6 className={styles.TTheading}>PERP Volume</h6>
         <p className={styles.TTdebt}>
           {PERP ? formatMoney.format(PERP) : 0}
         </p>
