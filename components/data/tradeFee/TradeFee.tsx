@@ -296,7 +296,7 @@ const TradeFee = ({
                                           "#03fca5" :
                                           entry.name === "SADDLE" ?
                                             "#9403fc" :
-                                            entry.name === "OTHER" ?
+                                            entry.name === "UNSPECIFIED" ?
                                               "#21cdfc" :
                                               entry.name === "0" ?
                                                 "#fc0303" :
@@ -323,7 +323,7 @@ const TradeFee = ({
                                           "#03fca5" :
                                           entry.name === "SADDLE" ?
                                             "#9403fc" :
-                                            entry.name === "OTHER" ?
+                                            entry.name === "UNSPECIFIED" ?
                                               "#21cdfc" :
                                               entry.name === "0" ?
                                                 "#fc0303" :
@@ -352,7 +352,7 @@ const TradeFee = ({
                                           "#03fca5" :
                                           entry.name === "SADDLE" ?
                                             "#9403fc" :
-                                            entry.name === "OTHER" ?
+                                            entry.name === "UNSPECIFIED" ?
                                               "#21cdfc" :
                                               entry.name === "0" ?
                                                 "#fc0303" :

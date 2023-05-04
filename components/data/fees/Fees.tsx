@@ -1,4 +1,5 @@
 import styles from './TotalValueLocked.module.css'
+
 import {
   XAxis,
   YAxis,
@@ -13,118 +14,53 @@ import CustomToolTip from './tooltip'
 import { RiInformationFill } from 'react-icons/ri'
 import InfoTooltip from '../../infoToolTip/InfoTooltip'
 import Dropdown from '../../dropdown/Dropdown'
-import { TVLRow } from '../../../lib/getDune'
+import { DisplayRow } from '../../../lib/helper/convertFees'
 
 interface TVL {
-  dayDataOvm: TVLRow[]
-  dayDataAll: any[]
-  weekDataOvm: any[]
-  weekDataAll: any[]
-  monthDataOvm: any[]
-  monthDataAll: any[]
-  dayDataMain: any[]
-  weekDataMain: any[]
-  monthDataMain: any[]
-  totalDataOvm: any[]
-  totalDataMain: any[]
-  totalDataAll: any[]
-  totalDebtOvm: number
-  totalDebtMain: number
-  totalWrapperOvm: number
-  totalWrapperMain: number
-  totalLoanOvm: number
-  totalLoanMain: number
+  dayDataAll: DisplayRow[]
+  weekDataAll: DisplayRow[]
+  monthDataAll: DisplayRow[]
+  dataAll: DisplayRow[]
+  latestResult: DisplayRow
   click: number
 }
 
 const TotalValueLocked = ({
-  click,
-  dayDataOvm,
-  dayDataMain,
   dayDataAll,
-  weekDataOvm,
-  weekDataMain,
   weekDataAll,
-  monthDataOvm,
-  monthDataMain,
   monthDataAll,
-  totalDebtOvm,
-  totalDebtMain,
-  totalWrapperOvm,
-  totalWrapperMain,
-  totalLoanOvm,
-  totalLoanMain,
-  totalDataOvm,
-  totalDataMain,
-  totalDataAll,
+  dataAll,
+  latestResult,
 }: TVL) => {
   const optionMap = [
     { value: 1, label: 'Daily' },
     { value: 2, label: 'Weekly' },
     { value: 3, label: 'Monthly' },
-    { value: 4, label: 'All Time' },
+    { value: 4, label: 'All Time'}
   ]
 
   const [timeFrame, setTimeFrame] = useState(1)
-
-  const getData = () => {
-    if (timeFrame === 1) {
-      return [dayDataOvm, dayDataMain, dayDataAll]
-    }
-    if (timeFrame === 2) {
-      return [weekDataOvm, weekDataMain, weekDataAll]
-    }
-    if (timeFrame === 3) {
-      return [monthDataOvm, monthDataMain, monthDataAll]
-    }
-    if (timeFrame === 4) {
-      return [totalDataOvm, totalDataMain, totalDataAll]
-    }
-    throw new Error(`Invalid timeFrame value: ${timeFrame}`)
-  }
 
   const handleActive = (option: any) => {
     setTimeFrame(option.value)
   }
 
-  // click === 1 ? mainnet : click === 10 ? optimism : click === 21 ? all networks
+  const { l1fee, l2fee, combined } = latestResult
+  const totalVolume = formatMoney.format(combined)
+  const perpV1Volume = formatMoney.format(l1fee)
+  const perpV2Volume = formatMoney.format(l2fee)
 
-  const totalValueLockedOvm = formatMoney.format(
-    totalDebtOvm + totalWrapperOvm + totalLoanOvm
-  )
-  const totalValueLockedMain = formatMoney.format(
-    totalDebtMain + totalWrapperMain + totalLoanMain
-  )
-  const totalValueLockedAll = formatMoney.format(
-    totalDebtMain +
-      totalDebtOvm +
-      (totalWrapperMain + totalWrapperOvm) +
-      (totalLoanMain + totalLoanOvm)
-  )
-
-  const [ovmData, mainData, allData] = getData()
-
-  const ttInfo = `Total Value Locked within SNX Ecosystem. Updated every 15 minutes`
+  const allData = [dayDataAll, weekDataAll, monthDataAll, dataAll][timeFrame - 1]
+  
 
   return (
     <div className={styles.container}>
       <div className={styles.topBar}>
         <div>
           <div className={styles.titleRow}>
-            <h3 className={styles.tvl}>SNX & Debt Minted</h3>
-            <InfoTooltip content={ttInfo}>
-              <span className={styles.icon}>
-                <RiInformationFill />
-              </span>
-            </InfoTooltip>
+            <h3 className={styles.tvl}>Synthetix Total Fees</h3>
           </div>
-          <p className={styles.values}>
-            {click === 1
-              ? totalValueLockedMain
-              : click === 10
-              ? totalValueLockedOvm
-              : totalValueLockedAll}
-          </p>
+          <p className={styles.values}>{totalVolume}</p>
         </div>
 
         <div className={styles.selectors}>
@@ -154,9 +90,7 @@ const TotalValueLocked = ({
 
       <div className={styles.responsive}>
         <ResponsiveContainer>
-          <AreaChart
-            data={click === 1 ? mainData : click === 10 ? ovmData : allData}
-          >
+          <AreaChart data={allData}>
             <defs>
               <linearGradient id="wrapperL" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#ED1EFF" stopOpacity={1} />
@@ -183,29 +117,44 @@ const TotalValueLocked = ({
               interval="preserveStartEnd"
               tickCount={5}
             />
-            <Area
-              type="linear"
-              dataKey="loan"
-              fill="url(#loanL)"
-              fillOpacity={0.6}
-              stackId={2}
-              strokeWidth={5}
-              stroke="#fff"
-            />
 
             <Area
               type="linear"
-              dataKey="debt"
+              dataKey="l1fee"
+              fill="url(#loanL)"
+              fillOpacity={0.6}
+              stackId={1}
+              strokeWidth={1}
+              stroke="#fff"
+            />
+
+
+            <Area
+              type="linear"
+              dataKey="l2fee"
               fill="url(#debtL)"
               fillOpacity={0.6}
-              stackId={2}
-              strokeWidth={5}
+              stackId={1}
+              strokeWidth={1}
               stroke="#31D8A4"
             />
+
             <Tooltip content={<CustomToolTip />} />
           </AreaChart>
         </ResponsiveContainer>
       </div>
+
+      {/* <div className={styles.bottom}>
+        <div className={styles.debtPool}>
+          <h5 className={styles.stakingColor}>PERP V2 Volume</h5>
+          <p className={styles.debtWrapVal}>{perpV2Volume}</p>
+        </div>
+
+        <div className={styles.loan}>
+          <h5 className={styles.loanColor}>perp v1 volume</h5>
+          <p className={styles.debtWrapVal}>{perpV1Volume}</p>
+        </div>
+      </div> */}
     </div>
   )
 }

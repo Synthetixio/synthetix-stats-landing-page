@@ -15,7 +15,6 @@ import { numStaker} from "../lib/getNumStaker"
 import { tradeData } from "../lib/getTradeData";
 import MoreStats from "../components/data/moreStats/MoreStats";
 import StartStaking from "../components/data/startStaking/StartStaking";
-import { getFutures } from "../lib/getFutures";
 
 const Futures = (props: any) => {
 
@@ -116,7 +115,6 @@ export default Futures;
 
 export async function getStaticProps() {
   const trades = await tradeData()
-  const future = await getFutures()
 
   return {
     props: {

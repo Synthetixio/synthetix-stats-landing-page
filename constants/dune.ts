@@ -1,0 +1,10 @@
+const DUNE = {
+    SNX_STAKING: '1898719',
+    SNX_INFLATION: '1906342',
+    SNX_USERS: '1895265',
+    SNX_FEES: '1893390',
+    SNX_TRADING_FEE: '1902409',
+    SNX_TVL: '1898719',
+    SNX_VOLUMES: '1910149',
+}
+export default DUNE

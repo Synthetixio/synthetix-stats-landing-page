@@ -4,7 +4,7 @@ import styles from './Tooltip.module.css'
 
 // date
 // tvl
-// staking debt pool
+// SNX Staked
 // wrapper
 const CustomTooltip = ({
   active,
