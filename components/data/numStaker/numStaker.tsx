@@ -33,6 +33,9 @@ interface NumStaker {
   monthMain: any[];
   monthOvm: any[];
   click: number;
+  totalAll: any[];
+  totalMain: any[];
+  totalOvm: any[];
 }
 const NumStaker = ({
   click,
@@ -47,7 +50,10 @@ const NumStaker = ({
   weekOvm,
   monthAll,
   monthMain,
-  monthOvm
+  monthOvm,
+  totalOvm,
+  totalMain,
+  totalAll,
 }: NumStaker) => {
 
   const allStaker = formatNumber.format(currentStakerAll)
@@ -55,10 +61,12 @@ const NumStaker = ({
   const mainStaker = formatNumber.format(currentStakerMain)
 
   const optionMap = [
-    { value: 1, label: "1 Day" },
-    { value: 2, label: "1 Week" },
-    { value: 3, label: "1 Month" }
+    { value: 1, label: "Daily" },
+    { value: 2, label: "Weekly" },
+    { value: 3, label: "Monthly" },
+    { value: 4, label: "All Time"}
   ]
+
 
   const [timeFrame, setTimeFrame] = useState(1);
 
@@ -66,9 +74,23 @@ const NumStaker = ({
     setTimeFrame(option.value);
   };
 
-  const ovmData = timeFrame === 1 ? dayOvm : timeFrame === 2 ? weekOvm : monthOvm
-  const mainData = timeFrame === 1 ? dayMain : timeFrame === 2 ? weekMain : monthMain
-  const allData = timeFrame === 1 ? dayAll : timeFrame === 2 ? weekAll : monthAll
+  const getData = () => {
+    if (timeFrame === 1) {
+      return [dayOvm, dayMain, dayAll]
+    } 
+    if (timeFrame === 2) {
+      return [weekOvm, weekMain, weekAll]
+    }
+    if (timeFrame === 3) {
+      return [monthOvm, monthMain, monthAll]
+    }
+    if (timeFrame === 4) {
+      return [totalOvm, totalMain, totalAll]
+    }
+    throw new Error(`Invalid timeFrame value: ${timeFrame}`)
+  }
+
+  const [ovmData, mainData, allData] = getData()
 
   const ttInfo = `How many SNX is currently staked. Updated every 15 minutes`
 

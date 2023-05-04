@@ -166,6 +166,10 @@ export function divide(rows: SNXRow[]) {
   const monthMain: StakerRow[] = []
   const monthOvm: StakerRow[] = []
 
+  const totalAll: StakerRow[] = []
+  const totalMain: StakerRow[] = []
+  const totalOvm: StakerRow[] = []
+
   sorted.slice(0, 7).forEach((row: SNXRow) => {
     const { day, cumulative_evt, cumulative_L1_evt, cumulative_L2_evt } = row
     const date = convertDate(day)
@@ -184,7 +188,6 @@ export function divide(rows: SNXRow[]) {
   })
 
   sorted.slice(0, 7 * 8).forEach((row, idx) => {
-    if (idx % 7 === 0) {
       const { day, cumulative_L1_evt, cumulative_L2_evt, cumulative_evt } = row
       const date = convertDate(day)
       weekAll.unshift({
@@ -199,12 +202,10 @@ export function divide(rows: SNXRow[]) {
         date,
         stakers: cumulative_L2_evt,
       })
-    }
   })
 
   //   monthly OVM
   sorted.slice(0, 30 * 8).forEach((row, idx: number) => {
-    if (idx % 30 === 0) {
       const { day, cumulative_L1_evt, cumulative_L2_evt, cumulative_evt } = row
       const date = convertDate(day)
       monthAll.unshift({
@@ -219,7 +220,23 @@ export function divide(rows: SNXRow[]) {
         date,
         stakers: cumulative_L2_evt,
       })
-    }
+  })
+
+  sorted.forEach(row => {
+      const { day, cumulative_L1_evt, cumulative_L2_evt, cumulative_evt } = row
+      const date = convertDate(day)
+      totalAll.unshift({
+        date,
+        stakers: cumulative_evt,
+      })
+      totalMain.unshift({
+        date,
+        stakers: cumulative_L1_evt,
+      })
+      totalOvm.unshift({
+        date,
+        stakers: cumulative_L2_evt,
+      })
   })
 
   return {
@@ -234,6 +251,10 @@ export function divide(rows: SNXRow[]) {
     monthAll,
     monthMain,
     monthOvm,
+    
+    totalAll,
+    totalMain,
+    totalOvm,
   }
 }
 
@@ -294,7 +315,7 @@ const sort = (a: object, b: object) => {
   return bDate.getTime() - aDate.getTime()
 }
 
-interface TVLQueryRow {
+export interface TVLQueryRow {
   day: string
   SDS_L2: number
   SDS_L1: number
@@ -315,14 +336,14 @@ interface TVLQueryRow {
   Total_stake_ratio: number
 }
 
-interface TVLRow {
+export interface TVLRow {
   date: string
   debt: number
   wrapper: number
   loan: number
 }
 
-interface TVLData {
+export interface TVLData {
   dayAll: TVLRow[]
   dayMain: TVLRow[]
   dayOvm: TVLRow[]
@@ -332,6 +353,9 @@ interface TVLData {
   monthAll: TVLRow[]
   monthMain: TVLRow[]
   monthOvm: TVLRow[]
+  totalOvm: TVLRow[]
+  totalMain: TVLRow[]
+  totalAll: TVLRow[]
 }
 
 export function divideTVL(rows: TVLQueryRow[]): TVLData | object {
@@ -353,78 +377,130 @@ export function divideTVL(rows: TVLQueryRow[]): TVLData | object {
   const monthMain: TVLRow[] = []
   const monthOvm: TVLRow[] = []
 
+  const totalAll: TVLRow[] = []
+  const totalMain: TVLRow[] = []
+  const totalOvm: TVLRow[] = []
+
   sorted.slice(0, 7).forEach((row: TVLQueryRow) => {
-    const { day, TVL_L1_Staked, TVL_L2_Staked, TVL_staked } = row
+    const {
+      day,
+      TVL_L1_Staked,
+      TVL_L2_Staked,
+      TVL_staked,
+      L1_stake_debt,
+      L2_stake_debt,
+    } = row
     const date = convertDate(day)
     dayAll.unshift({
       date,
       debt: TVL_staked,
       wrapper: 0,
-      loan: 0,
+      loan: L1_stake_debt + L2_stake_debt,
     })
     dayMain.unshift({
       date,
       debt: TVL_L1_Staked,
       wrapper: 0,
-      loan: 0,
+      loan: L1_stake_debt,
     })
     dayOvm.unshift({
       date,
       debt: TVL_L2_Staked,
       wrapper: 0,
-      loan: 0,
+      loan: L2_stake_debt,
     })
   })
 
-  sorted.slice(0, 7 * 7).forEach((row, idx) => {
-    if (idx % 7 === 0) {
-      const { day, TVL_L1_Staked, TVL_L2_Staked, TVL_staked } = row
+  sorted.slice(0, 7 * 7).forEach((row) => {
+      const {
+        day,
+        TVL_L1_Staked,
+        TVL_L2_Staked,
+        TVL_staked,
+        L1_stake_debt,
+        L2_stake_debt,
+      } = row
       const date = convertDate(day)
       weekAll.unshift({
         date,
         debt: TVL_staked,
         wrapper: 0,
-        loan: 0,
+        loan: L1_stake_debt + L2_stake_debt,
       })
       weekMain.unshift({
         date,
         debt: TVL_L1_Staked,
         wrapper: 0,
-        loan: 0,
+        loan: L1_stake_debt,
       })
       weekOvm.unshift({
         date,
         debt: TVL_L2_Staked,
         wrapper: 0,
-        loan: 0,
+        loan: L2_stake_debt,
       })
-    }
   })
 
   //   monthly OVM
-  sorted.slice(0, 30 * 7).forEach((row, idx: number) => {
-    if (idx % 30 === 0) {
-      const { day, TVL_L1_Staked, TVL_L2_Staked, TVL_staked } = row
+  sorted.slice(0, 30 * 7).forEach((row) => {
+      const {
+        day,
+        TVL_L1_Staked,
+        TVL_L2_Staked,
+        TVL_staked,
+        L1_stake_debt,
+        L2_stake_debt,
+      } = row
       const date = convertDate(day)
       monthAll.unshift({
         date,
         debt: TVL_staked,
         wrapper: 0,
-        loan: 0,
+        loan: L1_stake_debt + L2_stake_debt,
       })
       monthMain.unshift({
         date,
         debt: TVL_L1_Staked,
         wrapper: 0,
-        loan: 0,
+        loan: L1_stake_debt,
       })
       monthOvm.unshift({
         date,
         debt: TVL_L2_Staked,
         wrapper: 0,
-        loan: 0,
+        loan: L2_stake_debt,
       })
-    }
+  })
+
+  // total Data
+  sorted.forEach((row) => {
+    const {
+      day,
+      TVL_L1_Staked,
+      TVL_L2_Staked,
+      TVL_staked,
+      L1_stake_debt,
+      L2_stake_debt,
+    } = row
+    const date = convertDate(day)
+    totalAll.unshift({
+      date,
+      debt: TVL_staked,
+      wrapper: 0,
+      loan: L1_stake_debt + L2_stake_debt,
+    })
+    totalMain.unshift({
+      date,
+      debt: TVL_L1_Staked,
+      wrapper: 0,
+      loan: L1_stake_debt,
+    })
+    totalOvm.unshift({
+      date,
+      debt: TVL_L2_Staked,
+      wrapper: 0,
+      loan: L2_stake_debt,
+    })
   })
 
   return {
@@ -437,5 +513,8 @@ export function divideTVL(rows: TVLQueryRow[]): TVLData | object {
     monthOvm,
     monthMain,
     monthAll,
+    totalOvm,
+    totalMain,
+    totalAll,
   }
 }
